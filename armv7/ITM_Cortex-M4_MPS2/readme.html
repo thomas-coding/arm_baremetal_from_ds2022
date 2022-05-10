@@ -1,0 +1,161 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ITM and Event Viewer Example for Cortex-M4 on MPS2</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="ITM_and_Event_Viewer_Example_for_Cortex-M4_on_MPS2"></a><h1>ITM and Event Viewer Example for Cortex-M4 on MPS2 - Arm®Development Studio</h1>
+    
+        <div class="para">This example illustrates the use of ITM in Cortex-M4 on MPS2 and the Debugger's Event Viewer.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example illustrates the use of ITM in Cortex-M4 on MPS2 and the Debugger's Event Viewer.  A simple C example uses two ITM channels to transport text strings, in both raw text and encoded (timestamp) forms.  A ready-made launch configuration <span class="arg">ITM_Cortex-M4_MPS2.launch</span> is provided.</div>
+
+        <h3>Hardware and software requirements</h3>
+        <ul>
+           <li><div class="para">An MPS2 programmed for Cortex-M4, and a suitable power supply for it</div></li>
+           <li><div class="para">DSTREAM debug hardware with its power supply, and Mictor or CoreSight 20-way cable to connect to the MPS2</div></li>
+        </ul>
+
+        <div class="para">The source code is intended to be built with Arm Compiler for Embedded 6 and depends on semihosting support being provided by the debug system.  Arm Compiler for Embedded 6 is provided with Development Studio.  The Debugger will automatically enable semihosting for the image when it is built with Arm Compiler for Embedded 6.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\ITM_Cortex-M4_MPS2</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_example"></a><a name="running"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Connect the DSTREAM to the MPS2 by the Mictor or CoreSight 20-way cable.</div></li>
+            <li><div class="para">Power-up the DSTREAM and MPS2.</div></li>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">ITM_Cortex-M4_MPS2</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">In the Connections panel, enter the USB: or TCP: IP address or name of your DSTREAM unit in the Debug Hardware Address field, or click on <span class="interface">Browse</span> to select one from a list, otherwise an error will be reported: <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">Click on the "DTSL Options" <span class="interface">Edit...</span> button.</div></li>
+            <li><div class="para">In the <span class="interface">Trace Capture</span> tab, select (for DSTREAM-ST) <span class="interface">Streaming Trace</span> or (for DSTREAM) <span class="interface">DSTREAM 4GB Trace Buffer</span>.</div></li>
+            <li><div class="para">In the <span class="interface">ITM</span> tab, tick <span class="interface">Enable ITM Trace</span>.  Click on <span class="interface">OK</span> to save the DTSL options.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.</div></li>
+            <li><div class="para">The example image will be downloaded to the target and run to <span class="arg">main()</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Events</span> view, open the <span class="interface">View Menu</span>, then open the <span class="interface">Event Settings</span>.  Ensure the <span class="interface">Trace Source</span> matches the Trace capture method specified earlier, e.g. <span class="interface">DSTREAM:ITM</span> then press <span class="interface">Reset</span> to select <span class="interface">Binary</span> decoding for all <span class="interface">Ports/Channels 0-255</span>.</div></li>
+            <li>
+<div class="para">Run the executable (press F8). In the <span class="interface">App Console</span> view, you will see output of the form:</div>
+<pre class="code">Hello world from Cortex-M4
+Sent ITM trace events</pre>
+            </li>
+            <li>
+            <div class="para">In the <span class="interface">Events</span> view, you will see output of the form:</div>
+            <pre class="code">
+Port  Data
+  1   0x204d5449
+  1   0x20776172
+  1   0x74786574
+  1   0x73656d20
+  1   0x65676173
+  1   0x0000000a
+  2   0x80a0827e
+  2   0x0000011e
+  2   0x5449001a
+  2   0x7665204d
+  2   0x20746e65
+  2   0x6f636e65
+  2   0x20646564
+  2   0x7373656d
+  2   0x0a656761
+            </pre>
+            <div class="para">This shows some data is being successfully transported over some channels.  Only channels 1 and 2 are used in this example: channel 1 is (raw) Text encoded, and channel 2 is "TAE" encoded (Text, Analog, Event), that includes a target-generated timestamp.</div>
+            </li>
+            <li>
+            <div class="para">To view channel 1 decoded correctly, in the <span class="interface">Events</span> view, open the <span class="interface">View Menu</span>, then open the <span class="interface">Event Settings</span>, and select <span class="interface">Text</span> decoding for <span class="interface">Ports/Channel 1</span>.  To view channel 2 decoded correctly, in the <span class="interface">Events</span> view, select <span class="interface">TAE</span> decoding for <span class="interface">Ports/Channel 2</span>.  After clicking <span class="interface">OK</span>, you will see output of the form:</div>
+            <pre class="code">
+Port  Data
+  1   ITM raw text message
+            </pre>
+            <div class="para">In the other <span class="interface">Events</span> view, you will see output including a timestamp of the form:</div>
+            <pre class="code">
+Port  Data
+2	Time 347: ITM event encoded message
+            </pre>
+            </li>
+        </ol>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

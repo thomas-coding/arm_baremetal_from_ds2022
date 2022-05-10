@@ -1,0 +1,26 @@
+<projectDescription>
+	<name>Cortex-M55</name>
+	<comment>This example demonstrates the support for Cortex-M55, Armv8.1-M and M-Profile Vector Extension (MVE) in Arm Compiler for Embedded 6, the Cortex-M55 FVP model and the Debugger.</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+		<nature>com.arm.cmsis.pack.project.RteNature</nature>
+	</natures>
+</projectDescription>

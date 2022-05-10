@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="com.arm.eclipse.build.config.v6.exe.debug.base.92923641">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.arm.eclipse.build.config.v6.exe.debug.base.92923641" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.arm.eclipse.builder.armcc.error" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="axf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="clean" description="" id="com.arm.eclipse.build.config.v6.exe.debug.base.92923641" name="Debug" parent="com.arm.eclipse.build.config.v6.exe.debug.base">
+					<folderInfo id="com.arm.eclipse.build.config.v6.exe.debug.base.92923641." name="/" resourcePath="">
+						<toolChain id="com.arm.toolchain.v6.exe.debug.base.var.arm_compiler_6-6.1348438424" name="Arm Compiler 6" superClass="com.arm.toolchain.v6.exe.debug.base.var.arm_compiler_6-6">
+							<option id="com.arm.toolchain.v6.base.options.target.cpu_fpu.680311402" superClass="com.arm.toolchain.v6.base.options.target.cpu_fpu" value="Cortex-M1.NoFPU" valueType="string"/>
+							<option id="com.arm.toolchain.v6.base.options.floatabi.715890014" superClass="com.arm.toolchain.v6.base.options.floatabi" value="com.arm.tool.c.compiler.v6.base.option.floatabi.soft" valueType="enumerated"/>
+							<option id="com.arm.toolchain.v6.base.options.inst.613474889" superClass="com.arm.toolchain.v6.base.options.inst" value="com.arm.tool.c.compiler.v6.base.option.inst.thumb" valueType="enumerated"/>
+							<option id="com.arm.toolchain.v6.base.options.debug.level.1377627404" superClass="com.arm.toolchain.v6.base.options.debug.level" value="com.arm.tool.c.compiler.v6.base.options.debug.level.std" valueType="enumerated"/>
+							<option id="com.arm.toolchain.v6.base.options.libs.useMicroLib.269749871" superClass="com.arm.toolchain.v6.base.options.libs.useMicroLib" value="true" valueType="boolean"/>
+							<targetPlatform id="com.arm.toolchain.v6.exe.debug.base.var.arm_compiler_6-6.1348438424.742133896" name=""/>
+							<builder autoBuildTarget="all" buildPath="${workspace_loc:/startup_Cortex-M1_AC6}/Debug" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="com.arm.toolchain.v6.builder.2073132453" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder.Debug" parallelBuildOn="false" superClass="com.arm.toolchain.v6.builder"/>
+							<tool id="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6.288720719" name="Arm C Compiler 6" superClass="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.compiler.v6.base.option.target.290284923" superClass="com.arm.tool.c.compiler.v6.base.option.target" useByScannerDiscovery="true" value="arm-arm-none-eabi" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.cpu.1538789623" superClass="com.arm.tool.c.compiler.v6.base.option.cpu" useByScannerDiscovery="true" value="cortex-m1" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.fpu.1843621261" superClass="com.arm.tool.c.compiler.v6.base.option.fpu" useByScannerDiscovery="true" value="none" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.floatabi.2044543024" superClass="com.arm.tool.c.compiler.v6.base.option.floatabi" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.floatabi.soft" valueType="enumerated"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.inst.323338092" superClass="com.arm.tool.c.compiler.v6.base.option.inst" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.inst.thumb" valueType="enumerated"/>
+								<option id="com.arm.tool.c.compiler.v6.base.useMicroLib.1688250798" superClass="com.arm.tool.c.compiler.v6.base.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.compiler.v6.base.options.debug.level.496470440" superClass="com.arm.tool.c.compiler.v6.base.options.debug.level" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.options.debug.level.std" valueType="enumerated"/>
+								<inputType id="com.arm.tool.c.compiler.v6.base.input.57656373" superClass="com.arm.tool.c.compiler.v6.base.input"/>
+								<inputType id="com.arm.tool.cpp.compiler.v6.base.input.863892886" superClass="com.arm.tool.cpp.compiler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6.1651812213" name="Arm C++ Compiler 6" superClass="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.compiler.v6.base.options.debug.level.282083873" superClass="com.arm.tool.c.compiler.v6.base.options.debug.level" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.options.debug.level.std" valueType="enumerated"/>
+							</tool>
+							<tool id="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6.878990301" name="Arm Assembler 6" superClass="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.assembler.v6.base.option.target.567579418" superClass="com.arm.tool.assembler.v6.base.option.target" useByScannerDiscovery="false" value="arm-arm-none-eabi" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.cpu.727823916" superClass="com.arm.tool.assembler.v6.base.option.cpu" useByScannerDiscovery="false" value="cortex-m1" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.fpu.849823782" superClass="com.arm.tool.assembler.v6.base.option.fpu" useByScannerDiscovery="true" value="none" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.floatabi.748571248" superClass="com.arm.tool.assembler.v6.base.option.floatabi" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.floatabi.soft" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.v6.base.option.inst.197813893" superClass="com.arm.tool.assembler.v6.base.option.inst" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.inst.thumb" valueType="enumerated"/>
+								<option id="com.arm.tool.assembler.v6.base.useMicroLib.2125179855" superClass="com.arm.tool.assembler.v6.base.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.assembler.v6.base.options.debug.level.2143045237" superClass="com.arm.tool.assembler.v6.base.options.debug.level" useByScannerDiscovery="false" value="com.arm.tool.assembler.v6.base.options.debug.level.std" valueType="enumerated"/>
+								<inputType id="com.arm.tool.assembler.v6.base.input.1283853347" superClass="com.arm.tool.assembler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6.1934891844" name="Arm Linker 6" superClass="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.linker.option.scatter.1562168788" superClass="com.arm.tool.c.linker.option.scatter" useByScannerDiscovery="false" value="../scatter.scat" valueType="string"/>
+								<option id="com.arm.tool.linker.v6.option.useMicroLib.633344940" superClass="com.arm.tool.linker.v6.option.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.keep.799715753" superClass="com.arm.tool.c.linker.option.keep" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;exceptions.o(vectors)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__heap_base)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__heap_limit)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__initial_sp)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;scs.o(.bss.scs_registers)&quot;"/>
+								</option>
+								<option id="com.arm.tool.c.linker.option.sizes.628011121" superClass="com.arm.tool.c.linker.option.sizes" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.totals.627600321" superClass="com.arm.tool.c.linker.option.totals" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.elim.329977870" superClass="com.arm.tool.c.linker.option.elim" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<outputType id="com.arm.tool.c.linker.output.1982615125" outputPrefix="../" superClass="com.arm.tool.c.linker.output"/>
+							</tool>
+							<tool id="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6.464602107" name="Arm Librarian 6" superClass="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="com.arm.eclipse.build.config.v6.exe.release.base.1803745851">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.arm.eclipse.build.config.v6.exe.release.base.1803745851" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.arm.eclipse.builder.armcc.error" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="axf" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="clean" description="" id="com.arm.eclipse.build.config.v6.exe.release.base.1803745851" name="Release" parent="com.arm.eclipse.build.config.v6.exe.release.base">
+					<folderInfo id="com.arm.eclipse.build.config.v6.exe.release.base.1803745851." name="/" resourcePath="">
+						<toolChain id="com.arm.toolchain.v6.exe.release.base.var.arm_compiler_6-6.2062317617" name="Arm Compiler 6" superClass="com.arm.toolchain.v6.exe.release.base.var.arm_compiler_6-6">
+							<option id="com.arm.toolchain.v6.base.options.target.cpu_fpu.1913258409" superClass="com.arm.toolchain.v6.base.options.target.cpu_fpu" value="Cortex-M1.NoFPU" valueType="string"/>
+							<option id="com.arm.toolchain.v6.base.options.libs.useMicroLib.1808242115" superClass="com.arm.toolchain.v6.base.options.libs.useMicroLib" value="true" valueType="boolean"/>
+							<targetPlatform id="com.arm.toolchain.v6.exe.release.base.var.arm_compiler_6-6.2062317617.1926161598" name=""/>
+							<builder autoBuildTarget="all" buildPath="${workspace_loc:/startup_Cortex-M1_AC6}/Release" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="com.arm.toolchain.v6.builder.886120770" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder.Release" parallelBuildOn="false" superClass="com.arm.toolchain.v6.builder"/>
+							<tool id="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6.661516937" name="Arm C Compiler 6" superClass="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.compiler.v6.base.option.target.2094229210" superClass="com.arm.tool.c.compiler.v6.base.option.target" useByScannerDiscovery="true" value="arm-arm-none-eabi" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.cpu.899978859" superClass="com.arm.tool.c.compiler.v6.base.option.cpu" useByScannerDiscovery="true" value="cortex-m1" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.fpu.2035698716" superClass="com.arm.tool.c.compiler.v6.base.option.fpu" useByScannerDiscovery="true" value="none" valueType="string"/>
+								<option id="com.arm.tool.c.compiler.v6.base.useMicroLib.1504505957" superClass="com.arm.tool.c.compiler.v6.base.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.compiler.v6.base.option.optlevel.914465467" superClass="com.arm.tool.c.compiler.v6.base.option.optlevel" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.optlevel.high" valueType="enumerated"/>
+								<inputType id="com.arm.tool.c.compiler.v6.base.input.1699220397" superClass="com.arm.tool.c.compiler.v6.base.input"/>
+								<inputType id="com.arm.tool.cpp.compiler.v6.base.input.660144501" superClass="com.arm.tool.cpp.compiler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6.344163610" name="Arm C++ Compiler 6" superClass="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.compiler.v6.base.option.optlevel.1406707104" superClass="com.arm.tool.c.compiler.v6.base.option.optlevel" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.v6.base.option.optlevel.high" valueType="enumerated"/>
+							</tool>
+							<tool id="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6.283409580" name="Arm Assembler 6" superClass="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.assembler.v6.base.option.target.702740681" superClass="com.arm.tool.assembler.v6.base.option.target" useByScannerDiscovery="false" value="arm-arm-none-eabi" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.cpu.2023021423" superClass="com.arm.tool.assembler.v6.base.option.cpu" useByScannerDiscovery="false" value="cortex-m1" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.option.fpu.1841304446" superClass="com.arm.tool.assembler.v6.base.option.fpu" useByScannerDiscovery="true" value="none" valueType="string"/>
+								<option id="com.arm.tool.assembler.v6.base.useMicroLib.1684815764" superClass="com.arm.tool.assembler.v6.base.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<inputType id="com.arm.tool.assembler.v6.base.input.1403089080" superClass="com.arm.tool.assembler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6.955634973" name="Arm Linker 6" superClass="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.linker.option.scatter.211230653" superClass="com.arm.tool.c.linker.option.scatter" useByScannerDiscovery="false" value="../scatter.scat" valueType="string"/>
+								<option id="com.arm.tool.linker.v6.option.useMicroLib.350646649" superClass="com.arm.tool.linker.v6.option.useMicroLib" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.keep.1929920592" superClass="com.arm.tool.c.linker.option.keep" useByScannerDiscovery="false" valueType="stringList">
+									<listOptionValue builtIn="false" value="&quot;exceptions.o(vectors)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__heap_base)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__heap_limit)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;main.o(.rodata.__initial_sp)&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;scs.o(.bss.scs_registers)&quot;"/>
+								</option>
+								<option id="com.arm.tool.c.linker.option.sizes.276832937" superClass="com.arm.tool.c.linker.option.sizes" useByScannerDiscovery="false" value="false" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.totals.1274787563" superClass="com.arm.tool.c.linker.option.totals" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.arm.tool.c.linker.option.elim.374367724" superClass="com.arm.tool.c.linker.option.elim" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<outputType id="com.arm.tool.c.linker.output.409240169" outputPrefix="../" superClass="com.arm.tool.c.linker.output"/>
+							</tool>
+							<tool id="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6.2107405725" name="Arm Librarian 6" superClass="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="startup_Cortex-M1_AC6.com.arm.eclipse.build.project.v6.exe.1458363556" name="Executable"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="com.arm.projectSettings" version="6.0.0"/>
+	<storageModule moduleId="refreshScope"/>
+</cproject>

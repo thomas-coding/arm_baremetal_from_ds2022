@@ -1,0 +1,3 @@
+info flash
+flash load "flash_blinky-MCBSTM32E_AC6/flash_blinky-MCBSTM32E_AC6.axf"
+delete breakpoints

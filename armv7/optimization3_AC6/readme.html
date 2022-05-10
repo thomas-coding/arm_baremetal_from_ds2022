@@ -1,0 +1,203 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Compiler Optimization 3, with Arm Compiler for Embedded 6 - NEON auto-vectorization of bare-metal Fireworks example</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Compiler_Optimization_3,_with_Arm_Compiler_for_Embedded_6_-_NEON_auto-vectorization_of_bare-metal_Fireworks_example"></a><h1>Compiler Optimization 3, with Arm Compiler for Embedded 6 - NEON auto-vectorization of bare-metal Fireworks example - Arm®Development Studio</h1>
+    
+        <div class="para">This example demonstrates NEON auto-vectorization of the bare-metal Fireworks example using Arm Compiler for Embedded 6, and shows ways of modifying parts of the source code to take better advantage of NEON auto-vectorization and ways of measuring the performance gains of NEON auto-vectorization.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example demonstrates NEON auto-vectorization of the bare-metal Fireworks example using Arm Compiler for Embedded 6, and shows ways of modifying parts of the source code to take better advantage of NEON auto-vectorization and ways of measuring the performance gains of NEON auto-vectorization.  This example can be used as a testbed for experimenting with different build options and seeing their effect on code-size and performance.  This example is derived from the fireworks example.</div>
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6. If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">The executable builds with a base address 0x80000000 and is intended for running on the Cortex-A7 FVP model as supplied in Development Studio.</div>
+        <div class="para">This example depends on semihosting support being provided by the Debugger.</div>
+        <div class="para">A ready-made launch configuration <span class="arg">optimization3_AC6-Cortex-A7_FVP.launch</span> is provided.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example can be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">makefile</span>.
+        This executable has an application base address 0x80000000, and is intended for running on the Cortex-A7 FVP model.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\optimization3_AC6</span> directory and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example"></a><h2>Running the example</h2>
+       	<ul>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select <span class="arg">optimization3_AC6-Cortex-A7_FVP</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The executable (<span class="arg">optimization3_AC6.axf</span>) will be downloaded to the target and it will
+                run to the <span class="arg">main()</span> function.</div></li>
+            <li><div class="para">Run the executable (press F8).  A simulated fireworks display will be displayed on the model and printf() output appears in the <span class="interface">Target Console</span> view.</div></li>
+        </ul>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_VE_Cortex-A7x1 -a optimization3_AC6.axf
+</pre>
+        <div class="para">or via the command-line debugger <span class="arg">armdbg</span> with, for example:</div>
+<pre class="code">
+armdbg --cdb-entry "Arm FVP::VE_Cortex_A7x1::Bare Metal Debug::Bare Metal Debug::Debug Cortex-A7" --image=optimization3_AC6.axf
+run
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Exploring_the_example"></a><h2>Exploring the example</h2>
+        <div class="para">This example can be used as a testbed for experimenting with different build options, and seeing their effect on code-size and performance.
+		This example is derived from the fireworks example, with some source code changes, the main differences being:</div>
+        <ul>
+        <li><div class="para">The 3x3 pixel plotting and scrolling banner at the top of the screen have been disabled, so they do not interfere with cycle counting.</div></li>
+        <li><div class="para">NEON needs to access all the data of a structure to be able to vectorize a loop that includes the structure.  Therefore the original <span class="arg">Sparks</span> structure has been split into three and the enum split into separate <span class="arg">Shells</span> and <span class="arg">Sparks</span>.  Each spark type now has its own declaration.  This is done to be able to treat all of them independently while creating them or moving them.</div></li>
+        <li><div class="para">Some functions such as <span class="arg">moveSpark()</span> have been re-arranged and simplified to allow auto-vectorization.  Others, such as <span class="arg">newBurst()</span> have had their critical inner loops split into two - the first loop calculates the spark data including calls to my_random() that would otherwise prevent auto-vectorization, the second loop is auto-vectorized optimally because the loop count is a multiple of four.</div></li>
+        <li><div class="para">The <span class="arg">moveSpark()</span> and <span class="arg">displaySpark()</span> take parameters that are pointers to structures.  These are marked with the keyword <span class="arg">__restrict</span> to inform the compiler that the structures do not overlap, to be friendly towards NEON auto-vectorization.</div></li>
+        </ul>
+
+        <div class="para">The following sections demonstrate:</div>
+        <ol>
+        <li><div class="para">Compiling with/without NEON auto-vectorization</div></li>
+        <li><div class="para">Measuring NEON performance improvements inside a critical loop</div></li>
+        <li><div class="para">Measuring cache performance with PMU counters</div></li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Compiling_with/without_NEON_auto-vectorization"></a><h2>Compiling with/without NEON auto-vectorization</h2>
+        <div class="para">To generate NEON vector instructions from C/C++ code (NEON auto-vectorization), the following compiler options must be specified:</div>
+        <ul>
+        <li><div class="para">
+<span class="arg">-mcpu</span> with NEON capability, such as <span class="arg">-mcpu=Cortex-A7</span>
+</div></li>
+        <li><div class="para">To enable auto-vectorization you must compile at optimization level <span class="arg">-O2</span> or higher or <span class="arg">-O1 -fvectorize</span>
+</div></li>
+        </ul>
+        <div class="para">The makefile in this example compiles the sources as:</div>
+<pre class="code">
+-mcpu=cortex-A7 -mfpu=neon-vfpv4 -O3 -fvectorize source.c
+</pre>
+    <div class="para">This generates highly optimized code at the expense of a degraded debug view.</div>
+    <div class="para">The effect of disabling NEON auto-vectorization can be seen by changing <span class="arg">-fvectorize</span> to <span class="arg"> -fno-vectorize</span> switch.</div>
+    <div class="para">To see the effect of this, compile the code with the <span class="arg">-fno-vectorize</span> switch in place, re-connect to the target and place a breakpoint on the <span class="arg">moveSpark</span> function.</div>
+    <div class="para">Run to the breakpoint and open the <span class="interface">Disassembly</span> view and examine the assembly language code. If you now replace the <span class="arg">-fno-vectorize</span> switch with <span class="arg">-fvectorize</span> and return to the same breakpoint and examine the code again you will see a NEON instructions.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Measuring_NEON_performance_improvements_inside_a_critical_loop"></a><h2>Measuring NEON performance improvements inside a critical loop</h2>
+        <div class="para">The <span class="arg">moveSpark()</span> function is a critical loop within the fireworks program.  It is used to calculate the next position of every spark.  As there can be several thousand sparks alive at any moment, it is important that this calculation loop is performed efficiently.  Add the following code to the start of <span class="arg">moveSpark()</span>:</div>
+<pre class="code">
+   	if (loopCount &gt;= 0x1000)
+   	{
+   		start_perfmon();
+    :
+</pre>
+        <div class="para">And add the following code to the end of <span class="arg">moveSpark()</span>:</div>
+<pre class="code">
+    :
+   	stop_perfmon();
+   	}
+</pre>
+        <div class="para">This code uses the PMU counters to measure the number of Instructions Executed and Cycle Count (CCNT) taken to calculate the next positions of a large (&gt;= 0x1000) number of sparks. You might notice that the D-cache misses is always yielding 0, this is due to the cache not being modelled yet and will be explained further during this example.</div>
+        <div class="para">When compiling with NEON auto-vectorization, Arm Compiler for Embedded 6 can compile the <span class="arg">moveSpark()</span> function to take advantage of NEON, so that calculations can be performed on 4 sparks in parallel at a time.  For example, for 0x1100 sparks, only 0x440 iterations of the loop are required.  You can use the <span class="interface">Registers</span> view to watch the loop counter in a register counting down from 0x440 to zero.</div>
+        <div class="para">This reduction in the number of loops helps to speed up the overall calculation.  Please note: Make sure to be compiling at optimization level O1 and not O0 as many optimization flags will get ignored at O0, including <span class="arg">-fvectorize</span>.  Typical results with NEON auto-vectorization as displayed in the <span class="interface">Target Console</span> are:</div>
+<pre class="code">
+Instructions Executed = 50277
+Cycle Count (CCNT) = 53152
+</pre>
+    <div class="para">Now repeat the same measurement without NEON auto-vectorization.  Remove <span class="arg">-fvectorize</span> from the <span class="arg">DEFINES</span> line in the <span class="arg">makefile</span>, recompile and run the code again.  Typical results without NEON auto-vectorization as displayed in the <span class="interface">Target Console</span> are:</div>
+<pre class="code">
+Instructions Executed = 102300
+Cycle Count (CCNT) = 105271
+</pre>
+    </div>
+
+    <div class="indent">
+    <a name="Measuring_cache_performance_with_PMU_counters"></a><h2>Measuring cache performance with PMU counters</h2>
+    <div class="para">As well as being able to show the cycle count (CCNT) and the instructions executed, the PMU counters are also able to show the performance of the cache. Other characteristics of the processor can also be tracked.</div>
+    <div class="para">A software model that can model the hardware exactly would suffer greatly in performance and would be significantly slower than the hardware it is attempting to model. The flexibility of software models allows users to compare the results of the same code and how it runs on different cores easily. For performance reasons not all behaviour of hardware is modelled by default. A good example of this is modelling the state of the cache.</div>
+    <div class="para">To enable modelling the state of the cache, the FVP model must be launched with some additional switches.</div>
+    <div class="para">To add the switches, navigate to the <span class="interface">Debug Control</span> view, then select the current connection (for this example it is <span class="arg">optimization3_AC6-Cortex-A7_FVP</span>), then open <span class="interface">Debug Configurations...</span>. In the <span class="interface">Model parameters</span> enter:</div>
+    <div class="para"><span class="arg">-C cluster.l1_icache-state_modelled=1 -C cluster.l1_dcache-state_modelled=1 -C cluster.l2_cache-state_modelled=1</span></div>
+    <div class="para">These switches also allow certain PMU counters to work, such as the D-Cache misses. There is a similar counter for instructions. More information about PMU counters can be found in your processor's TRM.</div>
+    <div class="para">Reconnect and run the code and you will see that the <span class="arg">D-Cache Misses</span> will now start returning values.  You can now also open the <span class="interface">Cache Data</span> view and see the cached addresses where data or instructions have been stored.</div>
+    <div class="para">To view a full list of model configuration switches, launch the FVP model from an <span class="arg">Arm DS Command Prompt</span> with <span class="arg">--list-params</span>.</div>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

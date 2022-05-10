@@ -1,0 +1,225 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Compiler Optimization 2, with Arm Compiler for Embedded 6 - Additional Techniques</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Compiler_Optimization_2,_with_Arm_Compiler_for_Embedded_6_-_Additional_Techniques"></a><h1>Compiler Optimization 2, with Arm Compiler for Embedded 6 - Additional Techniques - Arm®Development Studio</h1>
+    
+        <div class="para">This example introduces some additional optimization techniques for application software using Arm Compiler for Embedded 6, including Link Time Optimization (LTO), floating point and NEON auto-vectorization.  It also describes some ways to estimate and reduce Stack and Heap usage.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example introduces some additional optimization techniques for application software using Arm Compiler for Embedded 6, including Link Time Optimization (LTO), floating point, and is illustrated by a simple bare-metal, semihosted example application.
+        It also introduces NEON auto-vectorization, and shows how you can make your source code more friendly to the compiler to generate efficient
+        NEON code.  It also describes some ways to estimate and reduce Stack and Heap usage.  To keep the example clear and simple, the
+        Performance Monitoring Unit (PMU) module introduced in optimization1_AC6 is omitted, but could easily be added if required.</div>
+
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6. If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">The executable builds with a base address 0x80000000, and is intended for running on the Cortex-A7 FVP model as supplied in Development Studio.</div>
+        <div class="para">A ready-made launch configuration <span class="arg">optimization2_AC6-Cortex-A7_FVP.launch</span> is provided.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Further_optimization_options_in_Arm_Compiler_for_Embedded_6"></a><h2>Further optimization options in Arm Compiler for Embedded 6</h2>
+        <div class="para">Arm Compiler for Embedded 6 provides several other optimization features.  The following is just a small selection of some of the most interesting features.  For a complete list of all switches, please refer to the <a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a>
+</div>
+        <ol>
+        <li>
+        <div class="para">The Arm Compiler and Linker can together perform Link Time Optimization (LTO), that enables "whole program" optimization.  To enable this, compile with <span class="arg">-flto</span> (or <span class="arg">-Omax</span>) and link with <span class="arg">--lto</span>.</div>
+        </li>
+        <li>
+        <div class="para">Unused functions can be removed automatically at link-time.  This can be enabled by selecting Eliminate unused sections in <span class="menu">Project<span class="para"> → </span>Properties<span class="para"> → </span>C/C++ Build<span class="para"> → </span>Settings<span class="para"> → </span>Arm Linker 6<span class="para"> → </span>Optimizations</span>, or by linking with <span class="arg">--remove</span> on the command-line. This is normally enabled by default.  The linker can output a list of removed unused sections.  This has been enabled for this example, but can be found in the <span class="menu">Project<span class="para"> → </span>Properties<span class="para"> → </span>C/C++ Build<span class="para"> → </span>Settings<span class="para"> → </span>Arm Linker 6<span class="para"> → </span>Additional information</span>, or by linking with <span class="arg">--info=unused</span> on the command-line.</div>
+        </li>
+        <li>
+        <div class="para">The Arm linker is able to inline small functions.  This feature is enabled by linking with <span class="arg">--inline</span>.  Use <span class="arg">--info=inline</span> to list all functions that are inlined by the linker.  Both the ability to inline and information about it have been enabled for this example under the Arm Linker 6 properties.</div>
+        </li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Using_NEON_and/or_VFP"></a><h2>Using NEON and/or VFP</h2>
+        <ol>
+        <li>
+        <div class="para">The Cortex-A7 FVP model offers hardware floating point such as VFP or NEON, if you wish to use it, you can enable it either by compiling with <span class="arg">-mfpu=neon-vfpv4</span> or by navigating to <span class="menu">Project<span class="para"> → </span>Properties<span class="para"> → </span>C/C++ Build<span class="para"> → </span>Settings<span class="para"> → </span>All Tool Settings<span class="para"> → </span>Target<span class="para"> → </span>Target FPU</span>, then change this to <span class="arg">VFPv4</span>
+</div>
+        <div class="para">Note: VFP or NEON are disabled on reset by default, however code has been provided to enable it in testmain.c in the <span class="arg">StartHere</span> function.</div>
+        </li>
+        <li>
+        <div class="para">To generate NEON vector instructions from C/C++ code (NEON auto-vectorization), the following compiler options must be specified:</div>
+        <ul>
+            <li><div class="para">
+<span class="arg">-mcpu</span> with NEON capability, such as <span class="arg">-mcpu=cortex-A7</span>
+</div></li>
+            <li><div class="para">
+<span class="arg">-mfpu</span> such as <span class="arg">-mfpu=neon-vfpv4</span>
+</div></li>
+            <li><div class="para">
+<span class="arg">-fvectorize</span> to enable NEON auto-vectorization</div></li>
+        </ul>
+        </li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Estimating_and_reducing_Stack_and_Heap_usage"></a><h2>Estimating and reducing Stack and Heap usage</h2>
+        <div class="para">The Stack and Heap can occupy a significant footprint of RAM in embedded systems.  To manage this RAM usage effectively, it is useful to be able to accurately estimate and minimize the Stack and heap use:</div>
+        <ol>
+        <li>
+        <div class="para">C/C++ code uses the stack intensively. For example, the stack is used to hold:</div>
+        <ul>
+        <li><div class="para">the return address of functions</div></li>
+        <li><div class="para">caller registers that must be preserved to comply with the Arm Architecture Procedure Call Standard (AAPCS)</div></li>
+        <li><div class="para">local variables that get 'spilled' onto the stack, local arrays, structures, unions, and C++ objects.</div></li>
+        </ul>
+        <div class="para">The heap is utilized by <span class="arg">malloc()</span> in C code and <span class="arg">new</span> in C++, and subsequently released with <span class="arg">free()</span> and <span class="arg">delete</span>.  Try to avoid your application "leaking" memory, by ensuring that each malloc/new has a matching free/delete.</div>
+        </li>
+
+        <li>
+        <div class="para">You can estimate your application's stack and heap size requirements using the following methods:</div>
+        <ul>
+        <li><div class="para">For a static estimation, link with <span class="arg">--callgraph</span> to produce a static callgraph.  This shows the size of each function, plus the stack space it consumes, and the worst case overall stack usage from the entry point.  This is a static analysis, and ignores any additional dynamic stack requirements, such as for (possibly nested) interrupt handlers.</div></li>
+        <li><div class="para">For an alternative static estimation, link with <span class="arg">--info=stack</span> or <span class="arg">--info=summarystack</span> to list the stack usage of all global symbols.</div></li>
+        <li><div class="para">For a dynamic estimation, you must run your application on a target.  In your code, first allocate space for the stack/heap that is much larger than you expect to require.  Using the Debugger, fill the stack/heap memory with a known value, for example, <span class="arg">0xDEADDEAD</span>, then run your application, or a fixed portion of it.  Aim to use as much of the stack/heap as possible in the test run.  For example, for stack estimation, try to exercise the most deeply nested function calls and the worst case path found by the static analysis.  Try to generate interrupts where appropriate, so that they are included in the stack usage too.  For heap estimation, exercise the paths with the largest <span class="arg">malloc()</span> or <span class="arg">new</span> calls.  After your application has finished executing, examine the stack/heap memory to see how many of the known values (0xDEADDEAD) have been overwritten.  Always use a worst-case run.</div></li>
+        <li><div class="para">For an alternative dynamic estimation, start with a stack/heap region that is slightly undersized, then set a watchpoint at the end of the stack/heap region, run your code as above, and if the watchpoint gets hit, the region size needs increasing.</div></li>
+        <li><div class="para">Another alternative dynamic estimation technique is to use the target's MMU or MPU.  Configure a No Access region just below the stack (or just above the heap).  An overflow at run-time will trigger a data abort.</div></li>
+        <li><div class="para">For Arm Linux applications, use the Arm Streamline Performance Analyser to reveal stack usage.  The stack usage for each thread and function is shown in the Call Paths and Functions tabs respectively.</div></li>
+        </ul>
+        </li>
+
+        <li>
+        <div class="para">You can help to reduce your application's stack requirements by:</div>
+        <ul>
+        <li><div class="para">writing small functions that only require a small number of variables</div></li>
+        <li><div class="para">minimizing the number of variables that are in use at any given time at each point in a function</div></li>
+        <li><div class="para">avoiding the use of large local structures, arrays or C++ objects - consider allocating them on the heap instead with <span class="arg">malloc()</span>.</div></li>
+        <li><div class="para">using C block scope - this involves declaring variables only where they are required. This minimizes use of the stack by overlapping memory required by distinct scopes.</div></li>
+        <li><div class="para">avoiding recursion.</div></li>
+        </ul>
+        </li>
+
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example can be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">Makefile</span>.</div>
+        <div class="para">This executable has an application base address 0x80000000, and is intended for running on the Cortex-A7 FVP model.</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\optimization2_AC6</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select <span class="arg">optimization2_AC6-Cortex-A7_FVP</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The example image will be downloaded to the target and it will
+                run to the <span class="arg">main()</span> function.</div></li>
+            <li><div class="para">Run the executable (press F8). Text output appears in the <span class="interface">Target Console</span> view.</div></li>
+        </ol>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_VE_Cortex-A7x1 -a optimization2_AC6.axf
+</pre>
+        <div class="para">or via the command-line debugger <span class="arg">armdbg</span> with, for example:</div>
+<pre class="code">
+armdbg --cdb-entry "Arm FVP::VE_Cortex_A7x1::Bare Metal Debug::Bare Metal Debug::Debug Cortex-A7" --image=optimization2_AC6.axf
+run
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Exploring_the_example"></a><h2>Exploring the example</h2>
+        <div class="para">This example can be used as a testbed for experimenting with different build options, and seeing their effect on code-size and performance.
+        This example demonstrates:</div>
+        <ol>
+        <li><div class="para">A function that is unused (<span class="arg">unused_function()</span>) and which can be removed at link-time.</div></li>
+        <li><div class="para">A function that is inlineable (<span class="arg">inlineable_function1()</span>), and its out-of-line version can be removed at link-time.</div></li>
+        <li><div class="para">A function in another source file <span class="arg">inlineable_function2()</span> is also inlineable when linked with <span class="arg">--inline</span>, its out-of-line version can be removed at link-time.</div></li>
+        <li><div class="para">Two functions in different source files (<span class="arg">code_share_function1()</span> and <span class="arg">code_share_function2()</span>) can share the same literal when compiled with <span class="arg">-flto</span>, and can be inlined, and their out-of-line versions can be removed at link-time.</div></li>
+        <li><div class="para">A comparison between an unoptimized <span class="arg">add_int_array1()</span> function to add two integer arrays, and an optimized <span class="arg">add_int_array2()</span> function to add two integer arrays, where the arrays do not overlap, and <span class="arg">n</span> is a multiple of four, which is friendly towards NEON auto-vectorization.  The compiler is informed the arrays do not overlap with the <span class="arg">--c99</span> keyword <span class="arg">restrict</span>.</div></li>
+        </ol>
+        <div class="para">Try compiling this example for both debug and release build configurations.  To change build configuration, select <span class="menu">Project<span class="para"> → </span>Properties<span class="para"> → </span>C/C++ Build<span class="para"> → </span>Settings</span>.
+        At the top of the panel, swap from debug to release.  The debug configuration has no optimization features enabled and is set to <span class="arg">-O0</span>, the lowest optimization level.
+        The release configuration has most of them turned on, and is set to <span class="arg">-O3</span> one of the highest optimization settings.  This will yield a significant difference in the size of code.</div>
+        <div class="para">To learn which are the most powerful of the optimization features, try changing the options for the debug version into those of the release version step by step, and observe the differences in the generated code after you have enabled/disabled a feature. See which one makes the biggest impact to the code size.</div>
+       </div>
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

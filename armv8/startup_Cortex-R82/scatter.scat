@@ -1,0 +1,34 @@
+;********************************************************
+; Scatter file for Cortex-R82 Startup code on FVP BaseR model
+; Copyright (c) 2020-2021 Arm Limited (or its affiliates). All rights reserved.
+; Use, modification and redistribution of this file is subject to your possession of a
+; valid End User License Agreement for the Arm Product of which these examples are part of 
+; and your compliance with all applicable terms and conditions of such licence agreement.
+;********************************************************
+
+LOAD 0x00000000
+{
+    CODE +0 0x8000
+    {
+        startup.o (StartUp, +FIRST)
+        * (InRoot$$Sections)                ; All library sections that must be in a root region
+        * (+RO)                             ; Application code, including C library
+    }
+
+    DATA 0x00008000 ALIGN 64 0x4000
+    {
+        * (+RW,+ZI)                         ; All RW and ZI Data
+    }
+    
+    ;
+    ; Separate heap - import symbol __use_two_region_memory
+    ; in source code for this to work correctly
+    ;
+    ARM_LIB_HEAP 0x0000C000 ALIGN 64 EMPTY 0x4000 {}
+
+    ;
+    ; App stacks for all CPUs
+    ; All stacks and heap are aligned to a cache-line boundary
+    ;
+    ARM_LIB_STACK    +0 ALIGN 64 EMPTY 4 * 0x1000 {}
+}

@@ -1,0 +1,179 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>STM (System Trace Macrocell) and Event Viewer Example for Arm Compiler for Embedded 6 and ST STM32MP15x platform</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="STM_(System_Trace_Macrocell)_and_Event_Viewer_Example_for_Arm_Compiler_for_Embedded_6_and_ST_STM32MP15x_platform"></a><h1>STM (System Trace Macrocell) and Event Viewer Example for Arm Compiler for Embedded 6 and ST STM32MP15x platform - Arm®Development Studio</h1>
+    
+        <div class="para">This example illustrates the use of STM (System Trace Macrocell) on the ST STM32MP15x platform and the Debugger's Event Viewer.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example illustrates the use of STM (System Trace Macrocell) on the ST STM32MP15x platform and the Debugger's Event Viewer, based on a modified version of the <span class="arg">Primes</span> example.  This makes use of two STM channels to transport text and data with timestamps.  A ready-made launch configuration <span class="arg">STM_STM32MP15x.launch</span> is provided.
+        This example is derived from the blog <a href="https://community.arm.com/tools/b/blog/posts/programming-arm-s-system-trace-macrocell" title="External link"><i>Programming ARMs System Trace Macrocell</i></a>.</div>
+
+        <h3>Hardware and software requirements</h3>
+        <ul>
+           <li><div class="para">ST STM32MP15x Evaluation platform and a suitable power supply for it</div></li>
+           <li><div class="para">DSTREAM-family debug hardware unit with its power supply, and JTAG and/or Mictor cable to connect to the ST STM32MP15x platform</div></li>
+           <li><div class="para">Alternatively, a ULINKpro (D) or ULINK2 debug unit can also be used</div></li>
+        </ul>
+
+        <div class="para">The source code is intended to be built with Arm Compiler for Embedded 6 and depends on semihosting support being provided by the debug system.  Arm Compiler for Embedded 6 is provided with Development Studio.  The Debugger will automatically enable semihosting for the image when it is built with Arm Compiler for Embedded 6.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\STM_STM32MP15x</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_example"></a><a name="running"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Connect the DSTREAM/ULINK to the target by the JTAG cable to CN14 and Mictor cable to U10 (see below).</div></li>
+            <li><div class="para">If using a ULINK(pro) device then just connect the JTAG cable to CN14</div></li>
+            <li><div class="para">Power-up the DSTREAM</div></li> 
+            <li><div class="para">Ensure STM32MP15x is set to boot from SDCard (SW1[1..3] set to ON-OFF-ON) and suitable Linux image is present on SDCard.</div></li>
+            <li><div class="para">Let STM32MP15x's boot loader initialize, but interrupt UEFI/U-Boot before booting Linux.</div></li>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">STM_STM32MP15x</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">For DSTREAM units, in the Connections panel, enter the USB: or TCP: IP address or name of your DSTREAM unit in the Debug Hardware Address field, or click on <span class="interface">Browse</span> to select one from a list, otherwise an error will be reported: <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">For ULINK units, in the Connections panel, click on <span class="interface">Browse</span> to select unit from a list, otherwise an error will be reported: <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">Click on the "DTSL Options" <span class="interface">Edit...</span> button.</div></li>
+            <li><div class="para">In the <span class="interface">Trace Buffer</span> tab, select the Trace capture method as either <span class="interface">On Chip Trace Buffer (CSTMC/ETF)</span> (for a JTAG cable connection) or <span class="interface">DSTREAM 4GB Trace Buffer</span> (for a Mictor cable connection to DSTREAM) or <span class="interface">Streaming Trace</span> (for a Mictor to JTAG+CS20 connection to DSTREAM-ST/-PT).</div></li>
+            <li><div class="para">In the <span class="interface">STM</span> tab, tick <span class="interface">Enable STM Trace</span>.  Click on <span class="interface">OK</span> to save the DTSL options.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.</div></li>
+            <li><div class="para">The example image will be downloaded to the target and run to <span class="arg">main()</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Events</span> view, open the <span class="interface">View Menu</span>, then open the <span class="interface">Event Settings</span>.  Ensure the <span class="interface">Trace Source</span> matches the Trace capture method specified earlier, e.g. <span class="interface">ETF:STM</span> then press <span class="interface">Reset</span> to select <span class="interface">Binary</span> decoding for all <span class="interface">Ports/Channels 0-65535</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Events</span> view menu bar, click on <span class="interface">Clear Trace</span>, then run the executable (press F8).</div></li>
+            <li><div class="para">After the executable has finished executing, in the <span class="interface">Events</span> view menu bar, click on <span class="interface">Decode events from the beginning of the trace buffer</span>.</div></li>
+            <li>
+<div class="para">In the <span class="interface">Events</span> view, you will see output of the form (where "/" represents an "STM Marker"):</div>
+            <pre class="code">
+Mstr  Chnl        TS       Size                 Data
+  64    0   12410037790457   /   1   0x43
+  64    0   12410037790457       7   0x61 0x6D 0x62 0x72 0x69 0x64 0x67
+  64    0   12410037790457       1   0x65
+  64    0   12410037790464   /   1   0x43
+  64    0   12410037790464       7   0x61 0x6D 0x62 0x72 0x69 0x64 0x67
+  64    0   12410037790464       1   0x65
+  64    0   12410037791871   /   1   0x43
+  64    0   12410037791871       7   0x61 0x6D 0x62 0x72 0x69 0x64 0x67
+  64    0   12410037791871       1   0x65
+  64    0   12410037793365   /   1   0x43
+  64    0   12410037793365       7   0x61 0x6D 0x62 0x72 0x69 0x64 0x67
+  64    0   12410037793365       1   0x65
+  64    1   12410037795328       1   0x29
+  64    1   12410037799423   /   1   0xD
+  64    1   12410037799423       1   0x2B
+  64    1   12410037800652   /   1   0xE
+  64    1   12410037800652       1   0x2F
+  64    1   12410037802666   /   1   0xF
+:
+            </pre>
+            <div class="para">This shows some data is being successfully transported over some channels.  Master 64 will be used if connected to Cortex-A7_0 at u-boot and channels 0 and 1 are used in this example: channel 0 is Text encoded, and channel 1 is Binary encoded.</div>
+            </li>
+            <li>
+            <div class="para">To view channel 0 decoded correctly, in the <span class="interface">Events</span> view, open the <span class="interface">View Menu</span>, then open the <span class="interface">Event Settings</span>, click <span class="interface">Clear</span> and add an entry for Master 64, channel 0, and select <span class="interface">Text</span>.  To view channel 1 decoded correctly, add an entry for Master 64, channel 1, and select <span class="interface">Binary</span>.  After clicking <span class="interface">OK</span>, you will see output of the form (where "/" represents an "STM Marker"):</div>
+            <pre class="code">
+Mstr  Chnl        TS       Size                 Data
+  64    0   12410037790457   /   1   C
+  64    0   12410037790457       8   ambridge
+  64    0   12410037790464   /   1   C
+  64    0   12410037790464       8   ambridge
+  64    0   12410037791871   /   1   C
+  64    0   12410037791871       8   ambridge
+  64    0   12410037793365   /   1   C
+  64    0   12410037793365       8   ambridge
+  64    1   12410037795328       1   0x29
+  64    1   12410037799423   /   1   0xD
+  64    1   12410037799423       1   0x2B
+  64    1   12410037800652   /   1   0xE
+  64    1   12410037800652       1   0x2F
+  64    1   12410037802666   /   1   0xF
+:
+            </pre>
+            </li>
+        </ol>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

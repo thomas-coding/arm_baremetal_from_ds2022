@@ -1,0 +1,222 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Cortex-R5(F) Startup Example Code for Arm Compiler for Embedded 6</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Cortex-R5(F)_Startup_Example_Code_for_Arm_Compiler_for_Embedded_6"></a><h1>Cortex-R5(F) Startup Example Code for Arm Compiler for Embedded 6 - Arm®Development Studio</h1>
+    
+        <div class="para">This example shows the bare-metal startup code for the Cortex-R5(F) processor, including vector table, exception handlers, MPU, cache, TCM and FPU initialization, and is illustrated by a simple semihosted "sorts" example application.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example shows the bare-metal startup code for the Cortex-R5(F) processor, including vector table, exception handlers, MPU, cache, TCM and FPU initialization.
+        A semihosted "sorts" example is provided in sorts.c for demonstration purposes, that can be replaced by your own application code.
+        This example can be run on either the Cortex-R5 FVP model, Versatile Express Cortex-R5x2 hardware (available separately) or your own target hardware.
+        This example can be used as a framework on which to build your own C/C++ applications.</div>
+
+        <h3>Hardware and software requirements</h3>
+        <div class="para">To run the example on Versatile Express Cortex-R5x2 hardware, you will need:</div>
+        <ul>
+           <li><div class="para">A Versatile Express Cortex-R5x2 and a suitable power supply for it.</div></li>
+           <li><div class="para">DSTREAM or ULINK debug hardware and a suitable power supply for it, and a JTAG cable to connect it to Versatile Express Cortex-R5x2</div></li>
+        </ul>
+
+        <div class="para">Ready-made launch configurations <span class="arg">startup_Cortex-R5_AC6-FVP.launch</span> (to connect to the FVP model) and <span class="arg">startup_Cortex-R5_AC6-coretile.launch</span> (to connect to Versatile Express Cortex-R5x2 hardware via DSTREAM) are provided.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">makefile</span>.  If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">The Eclipse project is a managed builder project, that creates a makefile in the /Debug directory.</div>
+        <div class="para">This executable has an application base address 0x0, and is intended for running in RAM on Versatile Express Cortex-R5x2, but could be easily ported to other Cortex-R5 platforms by simply changing the code and data addresses in the scatter-file <span class="arg">scatter.scat</span>.</div>
+        <div class="para">The assembler startup code is assembled into Arm instructions and the C application code is compiled into Thumb instructions (with the <span class="arg">--thumb</span> switch).</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\startup_Cortex-R5_AC6</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example_on_FVP_model"></a><h2>Running the example on FVP model</h2>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">startup_Cortex-R5_AC6-FVP</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The example executable will be downloaded to the target, and the program counter PC will be set to the entry point of the image.</div></li>
+
+            <li><div class="para">Run the executable (press F8).  The main() program displays a welcome message, enables the caches, performs a float calculation to demonstrate floating point, then runs the main application (sorts). Text output appears in the <span class="interface">Target Console</span> view, similar to:</div></li>
+        </ol>
+<pre class="code">
+Cortex-R5 bare-metal startup example
+Floating point calculation using the FPU...
+Float result is        0.937500
+Float result should be 0.937500
+Insertion sort took 8 clock ticks
+Shell sort took 4 clock ticks
+Quick sort took 6 clock ticks
+</pre>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_VE_Cortex-R5x1 -a startup_Cortex-R5_AC6.axf
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_example_on_Versatile_Express_Cortex-R5x2_hardware"></a><h2>Running the example on Versatile Express Cortex-R5x2 hardware</h2>
+        <ol>
+            <li><div class="para">Power-up the Versatile Express Cortex-R5x2</div></li>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">startup_Cortex-R5_AC6-versatile</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">In the Connections panel, enter the USB: or TCP: IP address or name of your DSTREAM or ULINK unit in the Debug Hardware Address field,
+                or click on <span class="interface">Browse</span> to select one from a list, otherwise an error will be reported:
+                <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The example image will be downloaded to the target and program execution will be held at <span class="arg">Start</span>.</div></li>
+
+            <li><div class="para">Run the executable (press F8).  The main() program displays a welcome message, enables the caches, performs a float calculation to demonstrate floating point, then runs the main application (sorts).  Text output appears in the <span class="interface">App Console</span> view, similar to:</div></li>
+        </ol>
+<pre class="code">
+Cortex-R5 bare-metal startup example
+Floating point calculation using the FPU...
+Float result is        0.937500
+Float result should be 0.937500
+Insertion sort took 8 clock ticks
+Shell sort took 4 clock ticks
+Quick sort took 6 clock ticks
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Debugging_the_reset_handler"></a><h2>Debugging the reset handler</h2>
+        <div class="para">To debug the reset handler, first disconnect any existing debug session, then power-cycle the Versatile Express Cortex-R5x2, then load the executable
+(<span class="arg">startup_Cortex-R5_AC6.axf</span>) in the same way as before, selecting "Debug from entry point" in the <span class="interface">Debugger</span> tab.</div>
+        <div class="para">The Debugger will download the program's code and data sections to the target, and set the program counter PC to the entry point of the image 
+at <span class="arg">Start</span>, at the reset entry in the vector table in <span class="arg">startup.s</span>.</div>
+
+        <ol>
+            <li>
+            <div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">Core</span> to see the core registers.</div>
+            </li>
+            <li>
+            <div class="para">Execute the <span class="arg">LDR PC, Reset_Addr</span> instruction by single-stepping (press F5) into <span class="arg">Reset_Handler</span>.
+      Notice the Program Counter (PC) change in the <span class="interface">Core</span> registers view.</div>
+            </li>
+            <li>
+            <div class="para">The first instructions inside <span class="arg">Reset_Handler</span> perform a read/modify/write (MRC, BIC, MCR) of CP15 Control Register to disable the MPU and caches.
+            In the <span class="interface">Registers</span> view, expand <span class="interface">CP15</span>, expand <span class="interface">Control</span>, then expand <span class="interface">SCTLR</span>.
+            Single-step (press F5) through these instructions, and see the I, C and M bits being cleared (if they were previously set).</div>
+            </li>
+            <li>
+            <div class="para">The next instructions initialize the Supervisor mode stack.  Expand <span class="interface">Core</span> in <span class="interface">Registers</span> view.
+            Single-step (press F5) through these instructions and see <span class="interface">SP</span> being initialized to address 0x48010000 as determined by the scatter-file <span class="arg">scatter.scat</span>.</div>
+            </li>
+            <li>
+            <div class="para">The next instructions (MOV, MCR) invalidate the Instruction and Data caches.  Single-step (press F5) through these instructions.</div>
+            </li>
+            <li>
+            <div class="para">The next block illustrates basic TCM configuration, as the basis for exploration by the user.  These are conditionally assembled via the TCM switch, which is not active by default.</div>
+            </li>
+            <li>
+            <div class="para">The next block configures the MPU for 4 regions (startup code, application code, data, stack/heap) to addresses determined by the scatter-file <span class="arg">scatter.scat</span>.
+            In the <span class="interface">Registers</span> view, expand <span class="interface">CP15</span>, then expand <span class="interface">MPU</span>.
+            Single-step (press F5) through these instructions, and see the region number, region base and region access control being set for each region.</div>
+            </li>
+            <li>
+            <div class="para">The next block enables access to the FPU and switches on the FPU hardware, if present.  This is conditionally assembled in only when assembling for Cortex-R5F, not Cortex-R5.</div>
+            </li>
+            <li>
+            <div class="para">Finally, the MPU is enabled and code execution branches to <span class="arg">__main</span> to setup the C library run-time environment.</div>
+            </li>
+            <li>
+            <div class="para">Delete all breakpoints, and continue running (press F8) until the application terminates normally.</div>
+            </li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Known_issues_and_troubleshooting"></a><h2>Known issues and troubleshooting</h2>
+        <ul>
+            <li><div class="para">This example has its vector table placed at address 0x48000000 (where there is RAM on a Versatile board), away from the default address 0x0.  This is OK for this simple semihosting example but if, for example, an interrupt handler was added, interrupts would not be handled correctly because the vector table has been moved away from its default position.  One possible workaround in this situation is to place I-TCM at 0x0, then copy the vector table from 0x48000000 into the I-TCM at 0x0.</div></li>
+        </ul>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

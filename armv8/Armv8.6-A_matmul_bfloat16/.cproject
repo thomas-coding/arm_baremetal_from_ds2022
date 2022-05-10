@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.1654121795">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.1654121795" moduleId="org.eclipse.cdt.core.settings" name="Default">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="com.arm.eclipse.builder.armcc.error" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration buildProperties="" description="" id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.1654121795" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.1654121795.1452583514" name="/" resourcePath="">
+						<toolChain id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.81364018" name="Arm Compiler 6" superClass="com.arm.toolchain.v6.base.var.arm_compiler_6-6">
+							<targetPlatform id="com.arm.toolchain.v6.base.var.arm_compiler_6-6.1654121795.217614303" name=""/>
+							<builder id="com.arm.toolchain.v6.builder.37428688" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="com.arm.toolchain.v6.builder"/>
+							<tool id="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6.1556550905" name="Arm C Compiler 6" superClass="com.arm.tool.c.compiler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.c.compiler.v6.base.option.defmac.203682355" name="Define macro (-D)" superClass="com.arm.tool.c.compiler.v6.base.option.defmac" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="__ARM_FEATURE_BF16"/>
+								</option>
+								<inputType id="com.arm.tool.c.compiler.v6.base.input.358692905" superClass="com.arm.tool.c.compiler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6.1439121332" name="Arm C++ Compiler 6" superClass="com.arm.tool.cpp.compiler.v6.base.var.arm_compiler_6-6"/>
+							<tool id="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6.397974730" name="Arm Assembler 6" superClass="com.arm.tool.assembler.v6.base.var.arm_compiler_6-6">
+								<option id="com.arm.tool.assembler.v6.base.option.defmac.48963603" name="Define macro (-D)" superClass="com.arm.tool.assembler.v6.base.option.defmac" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="__ARM_FEATURE_BF16"/>
+								</option>
+								<inputType id="com.arm.tool.assembler.v6.base.input.263255145" superClass="com.arm.tool.assembler.v6.base.input"/>
+							</tool>
+							<tool id="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6.1792134205" name="Arm Linker 6" superClass="com.arm.tool.c.linker.v6.base.var.arm_compiler_6-6"/>
+							<tool id="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6.488194634" name="Arm Librarian 6" superClass="com.arm.tool.librarian.v6.base.var.arm_compiler_6-6"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="Armv8.6-A_matmul_bfloat16.null.2138383064" name="Armv8.6-A_matmul_bfloat16"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+</cproject>

@@ -1,0 +1,23 @@
+; Scatter file for Armv8-A Startup code (AArch32 app part) on FVP Base model
+; Copyright (c) 2014-2021 Arm Limited (or its affiliates). All rights reserved.
+; Use, modification and redistribution of this file is subject to your possession of a
+; valid End User License Agreement for the Arm Product of which these examples are part of 
+; and your compliance with all applicable terms and conditions of such licence agreement.
+
+LOAD 0x80200000
+{
+    APP +0
+    {
+        * (+RO, +RW, +ZI)       ; All code and data
+    }
+
+    ; Separate heap - import symbol __use_two_region_memory
+    ; in source code for this to work correctly
+    ;
+    ARM_LIB_HEAP     +0 ALIGN 64 EMPTY 0x1000 {}
+
+    ; App stacks for all CPUs
+    ; All stacks and heap are aligned to a cache-line boundary
+    ;
+    ARM_LIB_STACK    +0 ALIGN 64 EMPTY 8 * 0x4000 {}
+}

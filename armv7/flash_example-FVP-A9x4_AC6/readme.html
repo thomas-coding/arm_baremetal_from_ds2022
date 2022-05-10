@@ -1,0 +1,242 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Flash Programming Example for Arm Compiler for Embedded 6</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Flash_Programming_Example_for_Arm_Compiler_for_Embedded_6"></a><h1>Flash Programming Example for Arm Compiler for Embedded 6 - Arm®Development Studio</h1>
+    
+        <div class="para">This example shows two ways of programming flash devices using the Debugger : using a Keil Flash Method and using a Custom Flash Method written in Jython.  For convenience, the Cortex-A9x4 FVP model supplied with Development Studio is used here as the target device.  This example can be used as a template for creating new flash algorithms.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example shows two ways of programming flash devices using the Debugger : using a Keil Flash Method and using a Custom Flash Method written in Jython.  For convenience, the Cortex-A9x4 FVP model supplied with Development Studio is used here as the target device.  This example can be used as a template for creating new flash algorithms.</div>
+        <div class="para">This example is an updated version of the example previously supplied with Application Note 352 "ARM DS-5 Technical introduction to file-based flash programming" (DAI 0352A).</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_Keil_flash_algorithm"></a><h2>Building the Keil flash algorithm</h2>
+        <div class="para">The Keil flash algorithm executable <span class="arg">FVP_VE_Cortex-A9x4.FLM</span> is supplied prebuilt in the <span class="arg">.../flash_example-FVP-A9x4_AC6/configdb/Flash/algorithms</span> directory, so there is no need to rebuild it before using it within this example.  However, if you need to modify the flash algorithm, for experimentation purposes, or to target a different flash device, then you must rebuild it after modifying it.</div>
+        <div class="para">The flash algorithm sources are intended to be built with Arm Compiler for Embedded 6. If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">The flash algorithm sources include <span class="arg">FlashPrg.c</span> and <span class="arg">FlashDev.c</span>, that #include <span class="arg">FlashOS.h</span>.  A linker scatter file (<span class="arg">Target.scat</span>) is provided to locate the Programming Functions and Device Description correctly.</div>
+        <div class="para">The executable is built read-only position independent and read-write position independent, and is not intended to run as an standalone application.</div>
+        <div class="para">The flash algorithm can be built either with the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">makefile</span> as follows:</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the Keil flash algorithm on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">.../flash_example-FVP-A9x4_AC6</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_example"></a><h2>Running the example</h2>
+        <div class="para">Before running this example, you must first point the Debugger at a new User Configuration Database containing the flash algorithm and an updated debug configuration to connect to the Cortex-A9x4 FVP model.  This User Configuration Database is located in the <span class="arg">.../flash_example-FVP-A9x4_AC6/configdb</span> directory, and includes the special files <span class="arg">FVP_VE_Cortex-A9x4.FLM</span> (used by the Keil Flash example), <span class="arg">flash_example.py</span> (used by the Custom Flash example) and <span class="arg">flash.xml</span> (used by both examples).  Tell the Debugger to use this User Configuration Database as follows:</div>
+        <ol>
+            <li><div class="para">Within Development Studio, select the <span class="menu">Window<span class="para"> → </span>Preferences</span> menu item. A dialog is displayed showing the preferences</div></li>
+            <li><div class="para">Expand the <span class="interface">Arm DS</span> entry in the left hand pane and select <span class="interface">Configuration Database</span>
+</div></li>
+            <li><div class="para">Click the <span class="interface">Add</span> button to add a new User Configuration Database entry. Give the new entry a name of your choice</div></li>
+            <li><div class="para">Use the <span class="interface">Browse...</span> button to locate the <span class="arg">.../flash_example-FVP-A9x4_AC6/configdb</span> directory, then click <span class="interface">OK</span> to close the Add configuration database location dialog</div></li>
+            <li><div class="para">Click the <span class="interface">Rebuild Database...</span> button and when complete, close the preferences dialog.</div></li>
+        </ol>
+        <div class="para">The example includes everything needed to program the "fake" flash (actually RAM) of the Cortex-A9x4 FVP model, using both the Keil Flash Method and the Custom Flash Method.  Ready-made launch configurations <span class="arg">FlashKeil-FVP-Cortex-A9x4.launch</span> and <span class="arg">FlashCustom-FVP-Cortex-A9x4.launch</span> are provided to triggers the entire flash programming process.  Some example flash images <span class="arg">FlashImage0x80000000.axf</span> and <span class="arg">FlashImage0x90000000.axf</span>) are also provided - these have been constructed to exhibit a pattern of data at address 0x80000000/0x90000000 onwards respectively.  After the flash load command has completed you should be able to use the <span class="interface">Memory</span> view to see this pattern in memory.</div>
+        <div class="para">For the <span class="arg">FlashKeil</span> example, <span class="arg">flash.xml</span> defines a fake flash address area of 0x80000000 to 0x8007FFFF (as defined in <span class="arg">FlashDev.c</span>) which is really a RAM area within the FVP.</div>
+        <div class="para">For the <span class="arg">FlashCustom</span> example, <span class="arg">flash.xml</span> defines a fake flash address area of 0x90000000 to 0x9000FFFF which is really a RAM area within the FVP.</div>
+        <div class="para">For both examples, <span class="arg">flash.xml</span> also defines a target RAM area of 0x90010000 to 0x9001FFFF into which the <span class="arg">FVP_VE_Cortex-A9x4.FLM</span> flash programming code and data buffers may be loaded.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_Keil_Flash_Method_example"></a><h2>Running the Keil Flash Method example</h2>
+        <div class="para">Before running this example, first ensure that you have pointed the Debugger at the new Configuration Database as mentioned above.</div>
+        <div class="para">A ready-made launch configuration <span class="arg">FlashKeil-FVP-Cortex-A9x4.launch</span> is provided that triggers the entire Keil flash programming process.  This invokes the "<span class="arg">info flash</span>" command to report the active flash configuration(s), and then the "<span class="arg">flash load FlashImage0x80000000.axf FlashKeil</span>" command.</div>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>
+</div></li>
+            <li><div class="para">Select the <span class="arg">FlashKeil-FVP-Cortex-A9x4</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The Cortex-A9x4 FVP model will launch, the Debugger will connect to it, then download flash algorithm executable <span class="arg">FVP_VE_Cortex-A9x4.FLM</span> to address 0x90010000 and run it to program the content of <span class="arg">FlashImage0x80000000.axf</span> to address 0x80000000</div></li>
+            <li><div class="para">Open the <span class="interface">Memory</span> view to see the pattern has been written to address 0x80000000 onwards</div></li>
+        </ol>
+        <div class="para">You should see the following output:</div>
+<pre class="code">
+Connected to stopped target ARM FVP New - FVP_VE_Cortex_A9x4-WithFlash
+cd "C:\Users\yourname\Development Studio Workspace"
+Working directory "C:\Users\yourname\Development Studio Workspace"
+Execution stopped in SVC mode at S:0x00000000
+S:0x00000000   DCI      0xe7ff0010 ; ? Undefined
+info flash
+FlashKeil
+ regions:    0x80000000-0x8007FFFF
+ parameters: address: 0x80000000
+             algorithm: FDB://algorithms/FVP_VE_Cortex-A9x4.FLM
+             coreName: ARM_Cortex-A9MP_0
+             disableTimeouts: false
+             driverVersion: 257
+             eraseSectorTimeout: 500
+             name: FVP VE Cortex-A9x4 Flash
+             programPageSize: 0x1000
+             programPageTimeout: 2000
+             ramAddress: 0x90010000
+             ramSize: 0x10000
+             sectorSizes: ((0x1000, 0x00000000))
+             size: 0x00080000
+             type: 1
+             valEmpty: 0xff
+             verify: true
+
+FlashCustom
+ regions:    0x90000000-0x9000FFFF
+ parameters: coreName: ARM_Cortex-A9MP_0
+             ramAddress: 0x90010000
+             ramSize: 0x10000
+
+
+flash load "${workspace_loc:/flash_example-FVP-A9x4_AC6/FlashImage0x80000000.axf}" FlashKeil
+Writing segment 0x80000000 ~ 0x80080000 (size 0x80000)
+WARNING(?): Segment 0x80000000 ~ 0x80100000 can only partially be written as it does not fully correspond to selected device regions
+Flash programming completed OK (target state was not preserved)
+</pre>
+        <div class="para">Note that the warning message can be ignored as the .axf file contains more data than will fit into the flash area.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_Custom_Flash_Method_example"></a><h2>Running the Custom Flash Method example</h2>
+        <div class="para">Before running this example, first ensure that you have pointed the Debugger at the new Configuration Database as mentioned above.</div>
+        <div class="para">A ready-made launch configuration <span class="arg">FlashCustom-FVP-Cortex-A9x4.launch</span> is provided that triggers the entire Custom flash programming process.  This invokes the "<span class="arg">info flash</span>" command to report the active flash configuration(s), and then the "<span class="arg">flash load FlashImage0x90000000.axf FlashCustom</span>" command.</div>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>
+</div></li>
+            <li><div class="para">Select the <span class="arg">FlashCustom-FVP-Cortex-A9x4</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.  The Cortex-A9x4 FVP model will launch, the Debugger will connect to it, then run the Jython script <span class="arg">flash_example.py</span> that, amongst other things, writes a small Thumb memcpy routine to address 0x90010000 and executes it to program the content of <span class="arg">FlashImage0x90000000.axf</span> to address 0x90000000</div></li>
+            <li><div class="para">Open the <span class="interface">Memory</span> view to see the pattern has been written to address 0x90000000 onwards</div></li>
+        </ol>
+        <div class="para">You should see the following output:</div>
+<pre class="code">
+Connected to stopped target ARM FVP New - FVP_VE_Cortex_A9x4-WithFlash
+cd "C:\Users\yourname\Development Studio Workspace"
+Execution stopped in SVC mode at S:0x00000000
+S:0x00000000   DCI      0xe7ff0010 ; ? Undefined
+Working directory "C:\Users\yourname\Development Studio Workspace"
+info flash
+FlashKeil
+ regions:    0x80000000-0x8007FFFF
+ parameters: address: 0x80000000
+             algorithm: FDB://algorithms/FVP_VE_Cortex-A9x4.FLM
+             coreName: ARM_Cortex-A9MP_0
+             disableTimeouts: false
+             driverVersion: 257
+             eraseSectorTimeout: 500
+             name: FVP VE Cortex-A9x4 Flash
+             programPageSize: 0x1000
+             programPageTimeout: 2000
+             ramAddress: 0x90010000
+             ramSize: 0x10000
+             sectorSizes: ((0x1000, 0x00000000))
+             size: 0x00080000
+             type: 1
+             valEmpty: 0xff
+             verify: true
+
+FlashCustom
+ regions:    0x90000000-0x9000FFFF
+ parameters: coreName: ARM_Cortex-A9MP_0
+             ramAddress: 0x90010000
+             ramSize: 0x10000
+
+
+flash load "${workspace_loc:/flash_example-FVP-A9x4_AC6/FlashImage0x90000000.axf}" FlashCustom
+Writing segment 0x90000000 ~ 0x90010000 (size 0x10000)
+WARNING(?): Segment 0x90000000 ~ 0x90100000 can only partially be written as it does not fully correspond to selected device regions
+Flash programming completed OK (target state was not preserved)
+</pre>
+        <div class="para">Note that the warning message can be ignored as the .axf file contains more data than will fit into the flash area.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Known_issues_and_troubleshooting"></a><h2>Known issues and troubleshooting</h2>
+        <ul>
+            <li>
+<div class="para">If you forget to point the Debugger at the new Configuration Database, the Debugger will report an error like:</div>
+<pre class="code">
+Launch configuration has errors
+Unable to find platform "ARM FVP New - FVP_VE_Cortex_A9x4-WithFlash" in the configuration database
+</pre>
+        <div class="para">To resolve this, use the <span class="menu">Window<span class="para"> → </span>Preferences</span> menu item as described earlier.</div>
+</li>
+        </ul>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100966/latest/"><i>Fixed Virtual Platforms FVP Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

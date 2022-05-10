@@ -1,0 +1,170 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Calendar bare-metal example for Armv8-A and GCC for bare-metal targets</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Calendar_bare-metal_example_for_Armv8-A_and_GCC_for_bare-metal_targets"></a><h1>Calendar bare-metal example for Armv8-A and GCC for bare-metal targets - Arm®Development Studio</h1>
+    
+        <div class="para">This example illustrates debugging a simple Armv8-A bare-metal calendar application that contains a logic error.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">The application outputs a list of dates for the calendar month following on from the date entered at the prompt.
+        It contains a deliberate logic error that requires debugging the source code to find and fix the error.
+        This example is intended to illustrate features of the Debugger - it is not intended to be a tutorial on Arm embedded software development.
+        This example can run on an Armv8-A FVP model.</div>
+
+        <div class="note"><div class="para">
+<div class="bold">Note</div>This example is intended to be built with GCC for bare-metal targets.  If you wish to modify and rebuild the example, you must have GCC for bare-metal targets installed.  GCC for bare-metal targets is not supplied with Development Studio, but can be downloaded from developer.arm.com (see below).</div></div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Installing_GCC_aarch64-none-elf_as_a_toolchain_in_Development_Studio"></a><a name="about"></a><h2>Installing GCC aarch64-none-elf as a toolchain in Development Studio</h2>
+        <div class="para">To be able to modify and rebuild this example, download <a href="https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-a/downloads" title="External link"><i>GCC 10.3.1 for AArch64 ELF bare-metal targets (aarch64-none-elf)</i></a>, and untar it onto your host machine (making a note of the installation directory).  Then add it as a toolchain in Development Studio as follows:</div>
+        
+        <ol>
+           <li><div class="para">In Development Studio, select <span class="menu">Window<span class="para"> → </span>Preferences<span class="para"> → </span>Arm DS<span class="para"> → </span>Toolchains</span>.</div></li>
+           <li><div class="para">In the <span class="interface">Toolchains</span> dialog, click <span class="interface">Add</span>.</div></li>
+           <li><div class="para">In the <span class="interface">Select Toolchain Path</span> dialog, enter the path to the toolchain binaries.  This is normally the <span class="arg">/bin</span> sub-directory of the installation directory noted above.  Then click <span class="interface">Next</span>.</div></li>
+           <li><div class="para">In the <span class="interface">Discovered Toolchain Information</span> dialog, check the toolchain information is correct, then click <span class="interface">Finish</span>.</div></li>
+           <li><div class="para">The new toolchain appears in the <span class="interface">Toolchains</span> dialog, click <span class="interface">Apply</span>, then click <span class="interface">Restart</span>.</div></li>
+        </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example can be built with GCC for bare-metal targets using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">Makefile</span>.  The Eclipse project is a makefile builder project, that uses the supplied <span class="arg">Makefile</span>.</div>
+        <div class="para">The executable <span class="arg">calendar_Armv8-A_GCC.axf</span> is built with a base address 0x80000000.</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+        <div class="para">A ready-made launch configuration <span class="arg">calendar_Armv8-A_GCC-FVP.launch</span> is provided.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+            <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">GCC 10.3.1 [aarch64-none-elf]</span> from the list</div></li>
+            <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "GCC 10.3.1 [aarch64-none-elf]" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\calendar_Armv8-A_GCC</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select <span class="arg">calendar_Armv8-A_GCC-FVP</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start the debugging and run to the <span class="arg">main()</span> function.</div></li>
+        </ol>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_Base_Cortex-A53x1 -a calendar_Armv8-A_GCC.axf -C bp.secure_memory=false -C cache_state_modelled=0
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Debugging_the_example"></a><h2>Debugging the example</h2>
+        <ol>
+            <li><div class="para">To see Global or File Static variables, you must first add them to the view.  In the <span class="interface">Variables</span> view (bottom right), click <span class="interface">Add</span>.  In the <span class="interface">Add Variable</span> dialog, select all (press Ctrl-A), then click <span class="interface">OK</span>.</div></li>
+            <li><div class="para">Set a watchpoint on the global variable <span class="arg">daysInMonth</span>. You can do this by right-clicking on the variable in the <span class="interface">Variables</span> view and selecting <span class="interface">Toggle Watchpoint</span> from the context menu. The watchpoint is created and listed in the Breakpoints view.</div></li>
+            <li><div class="para">Change the properties of the watchpoint to only detect when the watchpoint memory location is written to. You can do this in the Breakpoints view by right-clicking on the watchpoint and selecting <span class="interface">Properties...</span> In the type field select <span class="interface">WRITE</span> and then click <span class="interface">OK</span>.</div></li>
+            <li><div class="para">Click on <span class="interface">Continue</span> in the <span class="interface">Debug Control</span> view (or press F8) to continue running the application.</div></li>
+            <li><div class="para">Text output appears in the <span class="interface">App Console</span> view (if the example is running on real hardware) or in the <span class="interface">Target Console</span> view (if the example is running on a model).</div></li>
+            <li>
+<div class="para">Enter the following date at the prompt and then press the Return key to complete the request and hand control back to the debugger.</div>
+            <pre class="code">2009 11 01</pre>
+</li>
+            <li>
+<div class="para">The Debugger stops at the watchpoint. In the <span class="interface">Variables</span> view, expand <span class="arg"><span class="bold">Globals</span></span> in the Name column. You can see the global struct <span class="arg">date</span> and the global variable <span class="arg">daysInMonth</span>.</div>
+            <div class="para">Take note that the number of days in the month is 31. This is incorrect for November. You can correct the source code and rebuild the image but for this particular tutorial, continue with the next step.</div>
+</li>
+            <li>
+<div class="para">Change this value in the debugger using one of the following:</div>
+            <ul>
+                <li><div class="para">In the <span class="interface">Variables</span> view, enter 30 in the Value column for <span class="arg">daysInMonth</span>.</div></li>
+                <li>
+<div class="para">In the <span class="interface">Commands</span> view, enter the following command:</div>
+                <pre class="code">set variable "calendar.c"::daysInMonth = 30</pre>
+                </li>
+            </ul>
+            </li>
+            <li><div class="para">Click on <span class="interface">Continue</span> to continue running the application.</div></li>
+            <li><div class="para">Check the correct list of dates is written to the Console.</div></li>
+        </ol>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100966/latest/"><i>Fixed Virtual Platforms FVP Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/Controlling-Target-Execution/Overview--Breakpoints-and-Watchpoints"><i>Overview: Breakpoints and Watchpoints</i> in <i>Arm Development Studio User Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

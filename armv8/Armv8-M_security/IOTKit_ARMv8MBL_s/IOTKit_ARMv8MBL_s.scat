@@ -1,0 +1,14 @@
+SECURE_IROM 0x10000000 0x00200000  {    ; load region size_region
+  SECURE_CODE 0x10000000 {
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (+XO)
+  }
+  NSC_VENEERS 0x10001280 FIXED {    ; check with partition.h
+   *(Veneer$$CMSE)                   
+  }  
+  SECURE_DATA 0x38000000 0x00200000  {  ; RW data
+   .ANY (+RW +ZI)
+  }
+}

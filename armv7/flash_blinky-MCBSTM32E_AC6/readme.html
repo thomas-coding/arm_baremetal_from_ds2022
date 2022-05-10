@@ -1,0 +1,184 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MCBSTM32E Blinky Example for Arm Compiler for Embedded 6</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="MCBSTM32E_Blinky_Example_for_Arm_Compiler_for_Embedded_6"></a><h1>MCBSTM32E Blinky Example for Arm Compiler for Embedded 6 - Arm®Development Studio</h1>
+    
+        <div class="para">The 'Blinky' project is a simple program for the ST 'STM32F103ZE' microcontroller.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">The example has been extracted from Keil MDK-ARM (Microcontroller Development Kit).</div>
+		<div class="para">The 'Blinky' project is a simple program for the ST 'STM32F103ZE' microcontroller using Keil 'MCBSTM32E' Evaluation Board, compliant to Common Microcontroller Software Interface Standard (CMSIS v2.0).</div>
+        <div class="para">This is a simple example for the purposes of illustrating features of the Debugger.</div>
+
+        <h3>Hardware and software requirements</h3>
+        <ul>
+           <li><div class="para">A Keil MCBSTM32EXL Evaluation Board.</div></li>
+           <li><div class="para">DSTREAM or ULINK debug hardware and a suitable power supply for it, and a JTAG cable to connect it to Keil MCBSTM32EXL Evaluation Board.</div></li>
+        </ul>
+
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6. If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">This example is intended for running on Keil MCBSTM32EXL Evaluation Board, but could be easily ported to other Cortex-M3 platforms.</div>
+        <div class="para">A ready-made launch configuration <span class="arg">flash_blinky-MCBSTM32E_AC6.launch</span> is provided.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example can be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">makefile</span>.</div>
+        <div class="para">The Eclipse project is a managed builder project, that creates a makefile in the /Debug directory.</div>
+        <div class="para">The executable builds with a base address 0x08000000, and is intended for running in on-chip FLASH on Keil MCBSTM32EXL Evaluation Board, but could be easily ported to other Cortex-M3 platforms by simply changing the code and data addresses in the scatter-file <span class="arg">Blinky.scat</span>.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\flash_blinky-MCBSTM32E_AC6</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Power-up the Keil MCBSTM32EXL Evaluation Board.</div></li>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">flash_blinky-MCBSTM32E_AC6</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">In the Connections panel, enter the USB: or TCP: IP address or name of your DSTREAM or ULINK unit in the Debug Hardware Address field,
+                or click on <span class="interface">Browse</span> to select one from a list, otherwise an error will be reported:
+                <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to connect to the target.  The Debugger will connect to the board, perform a system reset and run to main. You can change the debug connection by modifying the Execute debugger commands in the <span class="interface">Debugger</span> tab.</div></li>
+
+            <li>
+<div class="para">Run the executable (press F8). </div>
+            </li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Programming_the_On-Chip_Flash_Memory"></a><h2>Programming the On-Chip Flash Memory</h2>
+        <div class="para">The example provides a ready-made script <span class="arg">flash_board.ds</span> that executes the Debugger flash command to reprogram the on-chip flash.</div>		
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">flash_blinky-MCBSTM32E_AC6</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">In the Connections panel, enter the USB: or TCP: IP address or name of your DSTREAM or ULINK unit in the Debug Hardware Address field,
+                or click on <span class="interface">Browse</span> to select one from a list, otherwise an error will be reported:
+                <span class="arg">
+        <span class="arg">Launch configuration has errors: Configuration for connection type 'Bare Metal Debug' is not valid - Connection cannot be empty</span>
+</span>.</div></li>
+            <li><div class="para">Select the <span class="interface">Debugger</span> tab, tick <span class="interface">Run debug initialization debugger script (.ds/ .py)</span> check box, 
+            click on <span class="interface">Workspace</span> and select <span class="arg">flash_board.ds</span> from the <span class="arg">flash_blinky-MCBSTM32E_AC6</span> project.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span>. The script, after showing information of the internal flash, will reflash the on-chip flash with the new image.</div></li>
+			<li><div class="para">After reflashing the microcontroller, the debugger will perform a system reset and run to main.</div></li>
+        </ol>
+    </div>
+	
+    <div class="indent">
+        <a name="Example_functionality"></a><h2>Example functionality</h2>
+        <div class="para">Clock Settings:</div>
+        <ul>
+            <li>
+            <div class="para">XTAL = 8.00 MHz</div>
+            </li>
+            <li>
+            <div class="para">SYSCLK = 72.00 MHz</div>
+            </li>			
+            <li>
+            <div class="para">HCLK = SYSCLK = 72.00 MHz</div>
+            </li>						
+        </ul>
+		<div class="para">SysTick Timer is used in interrupt mode.</div>
+		<div class="para">8 LEDs blink with speed depending on potentiometer position.</div>		
+		<div class="para">Colour GLCD display shows:</div>
+        <ul>
+            <li>
+            <div class="para">Init message.</div>
+            </li>
+            <li>
+            <div class="para">AD value and bargraph (depending on potentiometer position).</div>
+            </li>			
+            <li>
+            <div class="para">Button and joystick status.</div>
+            </li>						
+        </ul>		
+		<div class="para">AD conversion is done in DMA mode.</div>
+		<div class="para">AD settings: 12 bit resolution.</div>
+		<div class="para">AD value is output onto serial port USART2.</div>
+		<div class="para">USART2 settings: 115200 baud, 8 data bits, no parity, 1 stop bit.</div>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

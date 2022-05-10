@@ -1,0 +1,36 @@
+;*******************************************************
+; Copyright (c) 2012-2017 Arm Limited (or its affiliates). All rights reserved.
+; Use, modification and redistribution of this file is subject to your possession of a
+; valid End User License Agreement for the Arm Product of which these examples are part of 
+; and your compliance with all applicable terms and conditions of such licence agreement.
+;*******************************************************
+
+; Scatter-file for Cortex-R7 bare-metal example
+; Addresses suitable for targets with RAM from 0x0 to 0x10000
+; Change these addresses to match the RAM on your own target
+
+LOAD 0x0
+{
+    CODE +0 0x8000
+    {
+        startup.o (VECTORS, +First)         ; Startup code
+        * (InRoot$$Sections)                ; All library sections that must be in a root region
+        * (+RO)                             ; Application code, including C library
+    }
+
+    DATA 0x8000 0x4000
+    {
+        * (+RW,+ZI)                         ; All RW and ZI Data
+    }
+
+    ARM_LIB_STACKHEAP 0xC000 EMPTY 0x4000   ; Stack and heap
+    {
+    }
+}
+
+; Cortex-R7 optionally provides two Tightly-Coupled Memory (TCM) blocks (ITCM and DTCM)
+; Use these regions to place code and/or data in TCM:
+;    ITCM 0x40000000 0x10000 { ... }
+;    DTCM 0xE0FE0000 0x10000 { ... }
+;
+; Scatterloading can be used to copy code and/or data into the TCMs

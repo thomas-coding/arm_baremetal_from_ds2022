@@ -1,0 +1,192 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Compiler Optimization 1, with Arm Compiler for Embedded 6 - Basics</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+	
+	<a name="Compiler_Optimization_1,_with_Arm_Compiler_for_Embedded_6_-_Basics"></a><h1>Compiler Optimization 1, with Arm Compiler for Embedded 6 - Basics - Arm®Development Studio</h1>
+	
+		<div class="para">This example introduces some basic code size and performance optimization and measurement techniques for application software
+        using Arm Compiler for Embedded 6, and is illustrated by a simple bare-metal semihosted "sorts" example application.</div>
+	
+
+	<div class="indent">
+		<a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+		<div class="para">This example introduces some basic code size and performance optimization and measurement techniques for application software
+        using Arm Compiler for Embedded 6, and is illustrated by a simple example bare-metal "sorts" application.
+        It introduces the essential compiler switches required to build your application, so that the compiler can do most of the work of
+        optimizing your application, with no source code changes needed by you.
+        The example demonstrates the use of features of Arm Compiler for Embedded 6 to measure code and data sizes, and includes the use of the
+        Performance Monitoring Unit (PMU) on the target for measuring performance.</div>
+		<div class="para">This example is intended to be built with Arm Compiler for Embedded 6.  If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+		<div class="para">The executable builds with a base address 0x80000000, and is intended for running on the Cortex-A7 FVP model as supplied in Development Studio.</div>
+		<div class="para">A ready-made launch configuration <span class="arg">optimization1_AC6-Cortex-A7_FVP.launch</span> is provided.</div>
+	</div>
+
+	<div class="indent">
+		<a name="Basic_application_software_optimization"></a><h2>Basic application software optimization</h2>
+		<ol>
+
+			<li>
+			<div class="para">Ensure you compile for an appropriate CPU, typically either the specific core on your target, for example, <span class="arg">-mcpu=Cortex-A7</span>
+			or, if you need to compile code (for example, common library code) to run on a range of different targets, then compile for the lowest common denominator architecture, for example: <span class="arg">-mcpu=Cortex-A7x1</span>.</div>
+			</li>
+
+			<li>
+			<div class="para">Select an appropriate optimization level, one of <span class="arg">-O0</span> (the lowest), <span class="arg">-O1</span> (good for debug), <span class="arg">-O2</span> (aggressive), <span class="arg">-O3</span> (very aggressive), <span class="arg">-Omax</span> (most aggressive). The lower optimization levels are more suitable when debugging, for a better debug illusion.
+			As the optimization level is increased, more optimizations are enabled in the compiler, for example auto-inlining is enabled at <span class="arg">-O2</span> and above.</div>
+</li>
+			<li>
+			<div class="para">Decide on whether your code should run in mostly Arm state (compile with <span class="arg">-marm</span>) or mostly Thumb state (compile with <span class="arg">-mthumb</span>).  This decision may depend on whether your priority is on code size or performance.  For Cortex-A-series cores, which support Thumb-2, compiling with <span class="arg">-mthumb</span> will give the best of both worlds.</div>
+			</li>
+
+			<li>
+			<div class="para">To measure the code and data size of your application, Arm Compiler for Embedded 6 provides various options to give information about the size of your code, for example:</div>
+				<ul>
+					<li><div class="para">
+<span class="arg">armasm --info=totals</span> gives the size contributed by each assembler file</div></li>
+					<li><div class="para">
+<span class="arg">armlink --info=sizes,totals</span> gives the size contributed by each input object and the image totals</div></li>
+   			     	<li><div class="para">
+<span class="arg">fromelf -z</span> provides a breakdown of the size of an ELF object file or ELF image</div></li>
+				</ul>
+				<div class="para">Note: at link time, armlink will remove unused sections automatically. 
+				To see if any sections are removed, use <span class="arg">armlink --info=unused</span>.
+				armlink will also compress RW data by default, if sensible to do so.  For information about any compression applied, use <span class="arg">armlink --info=compression</span>.</div>
+			</li>
+		</ol>
+	</div>
+
+	<div class="indent">
+		<a name="Building_the_example"></a><h2>Building the example</h2>
+		<div class="para">This example can be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">Makefile</span>.</div>
+		<div class="para">The Eclipse project is a managed builder project, that creates a makefile in the /Debug directory.</div>
+		<div class="para">This executable has an application base address 0x80000000, and is intended for running on a Cortex-A7 FVP model.</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+	</div>
+
+	<div class="indent">
+		<a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+		<div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+		<div class="para">Then navigate to the <span class="arg">...\optimization1_AC6</span> directory, and type:</div>
+		<div class="para"><span class="arg">make</span></div>
+		<div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+	</div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+	<div class="indent">
+		<a name="Running_the_example"></a><h2>Running the example</h2>
+		<ol>
+			<li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+			<li><div class="para">Select <span class="arg">optimization1_AC6-Cortex-A7_FVP</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+			<li><div class="para">Click on <span class="interface">Debug</span> to start debugging. The example image will be downloaded to the target and it will 
+				run to the <span class="arg">main()</span> function.</div></li>
+
+			<li><div class="para">Run the executable (press F8). Text output appears in the <span class="interface">App Console</span> view.</div></li>
+		</ol>
+	</div>
+
+	<div class="indent">
+		<a name="Exploring_the_example"></a><h2>Exploring the example</h2>
+		<div class="para">This example can be used as a testbed for experimenting with different build options, and seeing their effect on code-size and performance:</div>
+		<ol>
+			<li>
+				<div class="para">Try compiling the example with <span class="arg">-O0</span> then <span class="arg">-O3</span>, and compare the code size and performance of both.
+				Notice that several functions are inlined automatically at <span class="arg">-O3</span>. To view a disassembly of the code generated,
+				use <span class="arg">fromelf -c sorts.o</span>, or load the image into the Debugger. There is normally no need to explicitly mark functions as
+				<span class="arg">inline</span> because Arm Compiler for Embedded 6 will automatically inline functions when it is sensible to do so.
+				It is good coding practice to mark functions as	<span class="arg">static</span> if they will only be used in the current compilation unit because the compiler
+				then has no need to generate an out-of-line version of the functions, which helps to reduce code size.</div>
+			</li>
+
+			<li>
+				<div class="para">Try compiling the example with <span class="arg">-O3 -marm</span> then <span class="arg">-O3 -mthumb</span>, and notice the improvement in code size
+				with little impact on performance. Whilst more instructions might need to be executed in Thumb, more Thumb instructions fit into a given cache.
+				Note that <span class="arg">-marm</span> means "mostly Arm" and <span class="arg">-mthumb</span> means "mostly Thumb". At compile time, some code sections might be	compiled
+				in the other state, and at link-time, the "best" libraries will be linked-in to match your selected CPU and build options, which may be in the
+				other state. To view the libraries selected by armlink to link-in, use <span class="arg">--info=libraries</span>.</div>
+			</li>
+
+			<li>
+				<div class="para">The Performance Counter code in <span class="arg">perf.c</span> counts I-Cache Misses, D-Cache Misses, Instructions Executed and PC Changes.
+				Try modifying this code to count Data Reads <span class="arg">0x06</span> and Data Writes <span class="arg">0x07</span>	instead.
+				A full table of possible parameters to measure is given in the TRM for your CPU.</div>
+			</li>
+
+			<li>
+				<div class="para">Branch prediction can play an important part in reducing Cycle Counts. Branch prediction and the caches are enabled in the <span class="arg">enable_caches()</span> function in <span class="arg">startup.S</span>, that is called from	<span class="arg">main()</span>. Try disabling it to see its effect.</div>
+			</li>
+
+		</ol>
+	</div>
+
+	<h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+	</ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

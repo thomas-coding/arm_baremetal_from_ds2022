@@ -1,0 +1,10 @@
+# STM Example
+# Debugger Initialization Script for ST STM32MP15x Platform
+# Assumes we're stopped at u-boot
+
+stop
+
+set $SCTLR.M = 0
+set $SCTLR.I = 0
+set $SCTLR.C = 0
+set $SCTLR.A = 0

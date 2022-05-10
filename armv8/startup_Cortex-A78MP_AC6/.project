@@ -1,0 +1,27 @@
+<projectDescription>
+	<name>startup_Cortex-A78MP_AC6</name>
+	<comment>Cortex-A78 multi-core (SMP) startup code example for AArch64, written in C and assembler, to demonstrate support for building and debugging Armv8-A bare-metal applications with Arm Compiler for Embedded 6 and the Debugger.</comment>
+	<projects>
+		<project>startup_Armv8-A_AArch64_AC6</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.arm.debug.ds.nature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+</projectDescription>

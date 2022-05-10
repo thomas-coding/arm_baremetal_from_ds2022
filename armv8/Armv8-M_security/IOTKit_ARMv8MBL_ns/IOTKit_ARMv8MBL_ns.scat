@@ -1,0 +1,12 @@
+NONSECURE_IROM 0x00200000 0x00200000  {    ; load region size_region
+  NONSECURE_CODE 0x00200000 0x00200000  {  ; load address = execution address
+   *.o (RESET, +First)
+   *(InRoot$$Sections)
+   .ANY (+RO)
+   .ANY (+XO)
+  }
+  NONSECURE_DATA 0x28200000 0x00200000  {  ; RW data
+   .ANY (+RW +ZI)
+  }
+}
+

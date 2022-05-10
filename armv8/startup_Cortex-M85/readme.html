@@ -1,0 +1,250 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Cortex-M85 bare-metal example for Arm Compiler for Embedded 6</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Cortex-M85_bare-metal_example_for_Arm_Compiler_for_Embedded_6"></a><h1>Cortex-M85 bare-metal example for Arm Compiler for Embedded 6 - Arm®Development Studio</h1>
+    
+        <div class="para">This example demonstrates the support for Cortex-M85, Armv8.1-M, M-Profile Vector Extension (MVE) and PACBTI in Arm Compiler for Embedded 6, the Cortex-M85 FVP model and the Debugger.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example demonstrates the support for Cortex-M85, Armv8.1-M, M-Profile Vector Extension (MVE) and PACBTI in Arm Compiler for Embedded 6, the Cortex-M85 FVP model and the Debugger, including:</div>
+        <ul>
+            <li><div class="para">compiling C code for Cortex-M85 and MVE, including a multiply-accumulate (MLA) function that can be auto-vectorized using MVE instructions, and for which the compiler generates low-overhead loop instructions.</div></li>
+            <li><div class="para">the use of <a href="https://developer.arm.com/architectures/instruction-sets/simd-isas/helium/mve-intrinsics" title="External link"><i>MVE intrinsics</i></a> in C code.</div></li>
+            <li><div class="para">the use of PACBTI in assembler and C code.</div></li>
+            <li><div class="para">running the executable image on the FVP model.</div></li>
+            <li><div class="para">debugging the executable image using the Debugger, including viewing a disassembly of the Armv8.1-M/MVE/PACBTI instructions and viewing the additional Armv8.1-M/MVE/PACBTI registers.</div></li>
+            <li><div class="para">capturing a history of instruction execution ("trace") from the FVP model and viewing it in the Debugger.</div></li>
+        </ul>
+        <div class="para">A ready-made debug launch configuration <span class="arg">startup_Cortex-M85_FVP.launch</span> is provided, to run the example on the Cortex-M85 FVP model provided in Development Studio.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6 using the supplied Eclipse project, or directly on the command-line with the supplied <span class="arg">Makefile</span>.  If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+    </div>
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\startup_Cortex-M85</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">makefile</span>.</div>
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Running_the_example"></a><a name="running"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select the <span class="arg">startup_Cortex-M85_FVP</span> launcher from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.</div></li>
+            <li><div class="para">The example image will be downloaded to the target and the Program Counter set to the first instruction in <span class="arg">main()</span>.</div></li>
+            <li><div class="para">Run the executable (press F8). Text output appears in the <span class="interface">Target Console</span>.</div></li>
+        </ol>
+<pre class="code">
+Cortex-M85 example
+
+1. Multiply-Accumulate (MLA):
+MLA result (sum of the squares from 0 to 63) is: 85344
+
+2. Vector floating-point multiplication using MVE intrinsics:
+[0.10, 0.20, 0.30, 0.40]
+            *
+[0.50, 0.60, 0.70, 0.80]
+            =
+[0.05, 0.12, 0.21, 0.32]
+
+3. Sum of products in three ways:
+Sum of products (inline assembler vmul/vaddv) = 560
+Sum of products (inline assembler vmladav)    = 560
+Sum of products (compiler intrinsics)         = 560
+Result of all tests should be                 = 560
+
+4. Demo PAC and BTI (separately) in assembler...
+
+5. Demo PACBTI added automatically in C code...
+Insertion sort took 0 clock ticks
+Shell sort took 0 clock ticks
+Quick sort took 1 clock ticks
+
+6. HardFault trigger/handler:
+This will fault...
+HardFault occurred!
+</pre>
+        <div class="para">To run the example again, first disconnect the Debugger from the target, then reconnect the Debugger and reload the executable in the same way as before.</div>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_MPS2_Cortex-M85 -C fvp_mps2.DISABLE_GATING=1 -C fvp_mps2.platform_type=1 -C cpu0.ID_ISAR5.PACBTI=2 -C cpu0.FPU=1 -C cpu0.MVE=2 -a startup_Cortex-M85.axf
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Exploring_the_example"></a><h2>Exploring the example</h2>
+        <div class="para">The example <span class="arg">main.c</span> contains all of the following, in this order:</div>
+        <ol>
+            <li><div class="para">A multiply-accumulate (MLA) function that can be auto-vectorized using MVE instructions, and for which the compiler generates low-overhead loop instructions.</div></li>
+            <li><div class="para">MVE intrinsics that perform a multiplication of two sets of four single-precision floating-point values.</div></li>
+            <li><div class="para">Sum of products of two arrays, in three different ways: using inline assembler with vmul/vaddv; using inline assembler using vmladav; and using compiler intrinsics.</div></li>
+            <li><div class="para">A demonstration of PAC and BTI (separately) in assembler.</div></li>
+            <li><div class="para">A demonstration of PACBTI added automatically in C code.</div></li>
+            <li><div class="para">A UDF instruction, which causes the processor to take a HardFault at run time, because UDF triggers an undefined instruction fault.</div></li>
+        </ol>
+
+        <div class="para">Disconnect any existing debug session, then reconnect and reload the executable in the same way as before, but this time with "Debug from entry point" selected in the <span class="interface">Debugger</span> tab.</div>
+        <ol>
+            <li><div class="para">The example image will be downloaded to the target and the Program Counter is set to the entry point at <span class="arg">Reset_Handler</span> in <span class="arg">startup.S</span>, and program execution stopped in Secure Privileged Thread mode.</div></li>
+            <li><div class="para">This assembler startup file provides dummy exception handlers and a reset handler.  <span class="arg">Reset_Handler</span> sets up the VTOR and enables access to the FPU, sets up a PAC signing key, enables PAC and BTI for the current security state and privileged mode,
+            enables UsageFault exception in System Handler Control and State Register (SHCSR) so that a Usage Fault will occur instead of a Hard Fault if a PACBTI mismatch is detected,
+            then calls the C library start-up code <span class="arg">__main</span> to initialize the C run-time environment, which ultimately calls <span class="arg">main()</span>.</div></li>
+            <li><div class="para">The first two blocks of instructions set up the VTOR and enable access to the FPU.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">System</span> then <span class="interface">SCB</span> to see the registers VTOR_S and CPACR_S.</div></li>
+            <li><div class="para">Single-step (press F5) through these two blocks of instructions, and see VTOR_S and CPACR_S being set up correctly.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">Core</span>, then expand <span class="interface">CONTROL_S</span> to see the PAC_EN and BTI_EN bits.
+            Notice that PAC and BTI are both currently disabled.
+            Equivalent debugger commands that can be entered in the <span class="interface">Commands</span> view to view these registers are <span class="arg">output $Core::$CONTROL_S.PAC_EN</span> and <span class="arg">output $Core::$CONTROL_S.BTI_EN</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">System</span> then <span class="interface">SCB</span> then <span class="interface">ID_ISAR5</span> to see the PACBTI bit.
+            Notice that address authentication is enabled.  This corresponds to the FVP model being launched with <span class="arg">-C cpu0.ID_ISAR5.PACBTI=2</span>.
+            An equivalent debugger command that can be entered in the <span class="interface">Commands</span> view is <span class="arg">output $System::$SCB::$ID_ISAR5.PACBTI</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">Core</span> to see the PAC_KEY registers.
+            Notice these are all currently zero.</div></li>
+            <li><div class="para">The code then sets up a PAC signing key.
+            Single-step (press F5) through these instructions to see these registers being written, and corresponding changes in <span class="menu">Registers<span class="para"> → </span>Core</span>.</div></li>
+            <li><div class="para">The code then enables PAC for the current security state and privileged mode.
+            Single-step (press F5) through these instructions to see these registers being written, and corresponding changes in <span class="menu">Registers<span class="para"> → </span>Core</span>.
+            Equivalent debugger commands that can be entered in the <span class="interface">Commands</span> view to set these bits are <span class="arg">set $Core::$CONTROL_S.PAC_EN = 1</span> and <span class="arg">set $Core::$CONTROL_S.BTI_EN = 1</span>.</div></li>
+            <li><div class="para">The code then enables the UsageFault exception in the System Handler Control and State Register (SHCSR), so that a Usage Fault will occur instead of a Hard Fault if a PACBTI mismatch is detected.
+            Single-step (press F5) through these instructions to see this register being written, and corresponding changes in <span class="menu">Registers<span class="para"> → </span>System<span class="para"> → </span>SCB<span class="para"> → </span>SHCSR_S</span>.
+            An equivalent debugger command that can be entered in the <span class="interface">Commands</span> view to set this bit is <span class="arg">set $System::$SCB::$SHCSR_S.USGFAULTENA = 1</span>.</div></li>
+            <li><div class="para">The code then calls the C library start-up code <span class="arg">__main</span> to initialize the C run-time environment, which ultimately calls <span class="arg">main()</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint on main() with <span class="arg">break main</span> and run to it (press F8), to reach the <span class="arg">main()</span> code in <span class="arg">main.c</span>.</div></li>
+            <li><div class="para">The code in main() prints a simple welcome banner using semihosting, initializes two global short arrays and performs a multiply-accumulate (MLA) on them, then creates two floating-point vector arrays and performs a floating-point vector multiply on them.</div></li>
+            <li><div class="para">To see Global or File Static variables, you must first add them to the view.  In the <span class="interface">Variables</span> view (bottom right), click <span class="interface">Add</span>.  In the <span class="interface">Add Variable</span> dialog, select all (press Ctrl-A), then click <span class="interface">OK</span>.</div></li>
+            <li><div class="para">Set a breakpoint on the function <span class="arg">init_arrays</span> and run to it (press F8).</div></li>
+            <li><div class="para">In the <span class="interface">Disassembly</span> view, notice a low-overhead loop is generated, using DLS (Do Loop Start) and LE (Loop End) instructions.</div></li>
+            <li><div class="para">Set a breakpoint on the <span class="arg">mla()</span> function and run to it (press F8).  Notice a low-overhead loop is also generated here.</div></li>
+            <li><div class="para">Single-step (press F5) through this function and, in the <span class="interface">Variables</span> view, watch <span class="arg">sum</span> increasing on each loop.  The result is eventually returned back to main() and printed.</div></li>
+            <li><div class="para">The next block of code within main() creates two local floating-point vector arrays (<span class="arg">vf1</span> and <span class="arg">vf2</span>) using MVE intrinsics and performs a floating-point vector multiply on them.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">MVE</span> to see the Q registers and their contents.  The Q registers can be further expanded to reveal the F, U and S sub-contents.  Here, look at the F32 entries.</div></li>
+            <li><div class="para">In the <span class="interface">Registers</span> view, expand <span class="interface">System</span> then <span class="interface">MVE</span> to see the registers VPR and LO_BRANCH_INFO.</div></li>
+            <li><div class="para">In the <span class="interface">Disassembly</span> view, see the two calls to <span class="arg">make_vector_of_floats</span> and the FMUL.F32 instruction.</div></li>
+            <li><div class="para">Single-step (press F5) through these instructions, and see the initial data and final result being loaded into Q registers.</div></li>
+            <li><div class="para">The next block of code within main() calculates the sum of products of two arrays, in three different ways: using inline assembler with vmul/vaddv; using inline assembler using vmladav; and using compiler intrinsics.
+            These three functions are named test1, test2 and test2.  These functions get inlined at high optimization levels.</div></li>
+            <li><div class="para">Set a breakpoint on the function <span class="arg">test1</span> and run to it (press F8).</div></li>
+            <li><div class="para">In the <span class="interface">Disassembly</span> view, see the MVE instructions such as VLDRB.U8 are shown.</div></li>
+            <li><div class="para">Single-step (press F5) through the inline assembler in this function, and see data being loaded into Q0 and Q1 (two "beats" each), and the result put into Q2 then transfered to R0 before being printed in the <span class="interface">Target Console</span>.</div></li>
+            <li><div class="para">Set a breakpoint on the function <span class="arg">test2</span> and run to it (press F8).</div></li>
+            <li><div class="para">Single-step (press F5) through the inline assembler in this function, and see data being loaded into Q0 and Q1 (two "beats" each), and the result put directly into R0 (no use of Q2 here) before being printed in the <span class="interface">Target Console</span>.</div></li>
+            <li><div class="para">Set a breakpoint on the function <span class="arg">test3</span> and run to it (press F8).</div></li>
+            <li><div class="para">Single-step (press F5) through the intrinsics in this function.  Being high-level code, the debug illusion is different, but the result is also printed in the <span class="interface">Target Console</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint with <span class="arg">break pacbti_asm_demo</span> and run to it (press F8), to reach the assembler function <span class="arg">pacbti_asm_demo</span> in <span class="arg">pacbti.S</span>.</div></li>
+            <li><div class="para">To be able to demonstrate PAC only (without BTI), the code temporarily disables BTI (leaving PAC enabled) for the current security state and privileged mode.
+            Single-step through these instructions.</div></li>
+            <li><div class="para">The code then calls a PAC-protected function (<span class="arg">func1</span>) that adds two values passed in R0 and R1, then calls a PAC-protected function (<span class="arg">func2</span>) that calculates a PAC from two values passed in R0 and R1.</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint with <span class="arg">break func1</span> and run to it (press F8).  <span class="arg">func1</span> demonstrates the use of the PAC and AUT instructions.
+            Single-step through the instructions in this function, to return to the calling BLX.</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint with <span class="arg">break func2</span> and run to it (press F8).  <span class="arg">func2</span> demonstrates the use of the PAC, PACG and BXAUT instructions.
+            Single-step through the instructions in this function, to return to the calling BLX.</div></li>
+            <li><div class="para">The code then re-enables BTI for the current security state and privileged mode, then calls a PAC- and BTI-protected function (<span class="arg">func3</span>).</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint with <span class="arg">break func3</span> and run to it (press F8).  <span class="arg">func3</span> demonstrates the use of the BLX (BTI setting instruction), PACBTI (BTI clearing instruction) and BXAUT instructions.
+            Single-step through the instructions in this function, to return to the calling BLX, then continue single-stepping to return to <span class="arg">main.c</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Commands</span> view, set a breakpoint with <span class="arg">break compare_sorts</span> and run to it (press F8), to reach the C code function <span class="arg">compare_sorts</span> in <span class="arg">sorts.c</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Disassembly</span> view, notice the PACBTI instruction on entry into <span class="arg">compare_sorts()</span> and an AUT instruction at its exit.
+            Similar PACBTI and AUT protection instructions have been added by the compiler automatically into all the other C code functions too.  
+            C library functions such as <span class="arg">printf</span>, <span class="arg">memcpy</span> and <span class="arg">atoi</span> are also protected in the same way.</div></li>
+            <li><div class="para">Finally, a deliberate Hard Fault is provoked using a UDF instruction.  The HardFault_Handler() function in hardfault_handler.c is called, which prints the message "HardFault occurred!".</div></li>
+            <li><div class="para">Continue running (press F8) until the program terminates (inside <span class="arg">_sys_exit</span>).</div></li>
+            <li><div class="para">To run the example again, disconnect the Debugger from the target, then reconnect the Debugger and reload the executable in the same way as before.</div></li>
+        </ol>
+        
+        <div class="para">To capture a history of instruction execution ("trace") from the FVP model and view it in the Debugger, first disconnect any existing debug session, then:</div>
+        <ol>
+            <li><div class="para">In the <span class="interface">Project Explorer</span> view, double-click on <span class="arg">startup_Cortex-M85_FVP.launch</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Edit Configuration</span> dialog, press the "DTSL Options" <span class="interface">Edit...</span> button.</div></li>
+            <li><div class="para">In the <span class="interface">DTSL Configuration</span> dialog, select <span class="interface">Model Trace</span> in the <span class="interface">Trace Buffer</span> tab,
+                and select <span class="interface">Enable ARM_Cortex-M85_0 trace</span> in the <span class="interface">Core Trace</span> tab, then press <span class="interface">OK</span>.</div></li>
+            <li><div class="para">In the <span class="interface">Edit Configuration</span> dialog, press the <span class="interface">Debug</span> button.</div></li>
+            <li><div class="para">Open the <span class="interface">Trace</span> view.</div></li>
+            <li><div class="para">Run and debug as before.  A history of instruction execution is displayed in the <span class="interface">Trace</span> view.</div></li>
+        </ol>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100966/latest/"><i>Fixed Virtual Platforms FVP Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100955/latest"><i>DSTREAM User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

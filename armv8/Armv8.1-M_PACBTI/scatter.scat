@@ -1,0 +1,35 @@
+;*******************************************************
+; Copyright (c) 2021-2022 Arm Limited (or its affiliates). All rights reserved.
+; Use, modification and redistribution of this file is subject to your possession of a
+; valid End User License Agreement for the Arm Product of which these examples are part of 
+; and your compliance with all applicable terms and conditions of such licence agreement.
+;*******************************************************
+
+; Scatter-file for Armv8.1-M PACBTI Example
+
+; This scatter-file places the vector table, application code, data, stacks and heap at suitable addresses in the memory map.
+
+; The vector table is placed first at the start of the image.
+; Code starts after the last entry in the vector table.
+; Data is placed at an address that must correspond to RAM.
+; Stack and Heap are placed using ARM_LIB_STACKHEAP.
+
+; 0x10000000 is the start address of the secure code area for FVP_MPS2 Armv8-M models with security extensions 
+LOAD_REGION 0x10000000 0x00200000
+{
+  CODE 0x10000000 0x00200000
+  {
+    startup.o (VECTORS, +First)
+    * (InRoot$$Sections)
+    * (+RO)
+  }
+
+  DATA 0x20000000 0x00020000
+  {
+    * (+RW, +ZI)
+  }
+
+  ARM_LIB_STACKHEAP +0 EMPTY 0x4000   ; Stack and heap
+  {
+  }
+}

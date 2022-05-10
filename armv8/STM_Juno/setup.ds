@@ -1,0 +1,16 @@
+# STM Example
+# Debugger Initialization Script for Juno Platform
+# Assumes we're stopped at UEFI Shell or at EL2 in some
+# other way.
+
+stop
+
+set semihosting heap-base 0x80200000
+set semihosting heap-limit 0x80300000
+set semihosting stack-base 0x80300000
+set semihosting stack-limit 0x80400000
+
+set $SCTLR_EL2.M = 0
+set $SCTLR_EL2.I = 0
+set $SCTLR_EL2.C = 0
+set $SCTLR_EL2.A = 0

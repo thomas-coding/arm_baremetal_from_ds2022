@@ -1,0 +1,24 @@
+EXAMPLES INSTALLATION INSTRUCTIONS - ARM DEVELOPMENT STUDIO
+-----------------------------------------------------------
+Examples are provided in zip files that are located in the 'examples' folder in the Development Studio installation. Other optional examples can be downloaded from the 'Downloads' page of https://developer.arm.com.
+
+USING THE EXAMPLES IN ARM DEVELOPMENT STUDIO
+--------------------------------------------
+The zip files contain project files that you can import into the workspace of Arm Development Studio.
+To import the examples into Arm Development Studio:
+1. Launch "Arm Development Studio"
+2. Select "File -> Import..." to open the Import Selection dialog.
+3. Expand the "Arm Development Studio" group and select "Examples and Programming Libraries".
+4. Click "Next" to open the "Import Development Studio Examples and Programming Libraries" dialog.
+5. Expand the "Examples" group to view the example categories.
+6. Either select one (or more) of the example categories to import, or expand the example categories to view/select individual examples in each category.
+7. Click "Finish" to import the selected examples into your workspace.
+
+
+USING THE EXAMPLES ON THE COMMAND-LINE
+--------------------------------------
+Unzip the full content of the zip file to a writable folder on your computer such as Documents or your home directory, because the Development Studio installation root directory is read only.
+Refer to the readme for information on how to select the appropriate compiler before (re)building an example at the command prompt with make.
+
+---------------------------------------------------
+Copyright (c) 2010-2022 Arm Limited (or its affiliates). All rights reserved.

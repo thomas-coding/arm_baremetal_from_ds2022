@@ -1,0 +1,258 @@
+<html xmlns:fn="http://www.w3.org/2005/xpath-functions">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Overlay Manager with Manual Overlays Example</title>
+<style type="text/css">
+    body { font-size: 62.5%;    /* default 1.0em = 16px, so 62.5% of 16 = 10. Therefore, 1.0em now = 10px, 1.2em now = 12px etc. */
+        font-family: Verdana, Arial, "Lucida Grande", sans-serif; margin: 10px; padding: 0; background: #fff; min-width: 999px; }
+    /* Content Styling */
+    .para { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    p { font-size: 1.2em; margin-bottom: 0px; margin-top: 10px; }
+    h1 { font-size: 1.6em; color: #025066; margin-top: 0px; margin-bottom: 0px; }
+    h2 { font-size: 1.4em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    h3 { font-size: 1.2em; font-weight: bold; color: #025066; margin-bottom: 0px; }
+    a { color: #127490; }
+    a:hover { color: #014153; }
+    div.indent { margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    div.note { font-size: 1.0em; margin-left:10px; margin-right: 10px; margin-bottom: 0px; margin-top: 10px; }
+    .table { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    div.toc ul li { font-size: 1.0em; list-style-image: url(images/bullet_blue.png); }
+    .table-cell { font-size: 75%; }
+    .image { margin-top: 5px; margin-bottom: 5px; padding:0px; }
+    .note { margin-bottom: 15px; background: #E0E0E0 }
+    .toc { font-size: 115%; margin-left: 20px; margin-top: 10px; margin-bottom: 15px; }
+    .italic { font-style: italic; }
+    .bold { font-weight: bold; }
+    .emphasis { font-weight: bold; font-style: italic; }
+    .underline { text-decoration: underline; }
+    .bold-underline { text-decoration: underline; font-weight: bold; }
+    .arg { font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; color:#333399; }
+    .repl { font-style: italic; }
+    .code { font-size: 1.2em; margin-top: 2px; margin-left: 20px; margin-bottom: 2px; color: #333399;
+       font-family: 'Lucida Sans Typewriter', 'Courier New', Courier, monospace; }
+    .menu { font-weight: bold; }
+    .interface { font-weight: bold; }
+    ul {margin-top: 2px; margin-bottom: 5px; }
+    ol {list-style-type:decimal; margin-top: 2px; margin-bottom: 5px; }
+    ol ol {list-style-type:lower-alpha; margin-top: 2px; margin-bottom: 5px; }
+    ol ol ol {list-style-type:lower-roman; margin-top: 2px; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    
+    <a name="Overlay_Manager_with_Manual_Overlays_Example"></a><h1>Overlay Manager with Manual Overlays Example - Arm®Development Studio</h1>
+    
+        <div class="para">Example overlay manager and application to illustrate the support for manual overlays in Arm Compiler for Embedded 6 and the Debugger.</div>
+    
+
+    <div class="indent">
+        <a name="Purpose_and_scope"></a><h2>Purpose and scope</h2>
+        <div class="para">This example comprises an overlay manager library and example application that uses it, to illustrate the support for manual overlays in Arm Compiler for Embedded 6 and the Debugger.</div>
+        <div class="para">This example is intended to be built with Arm Compiler for Embedded 6. If you wish to modify and rebuild the example, you must use Arm Compiler for Embedded 6 to rebuild it.</div>
+        <div class="para">The example builds the overlay manager as a library file called <span class="arg">overlay.a</span>, and also a runnable executable called <span class="arg">overlay_manager_manual.axf</span>.  The overlay manager library can be used with your own application, as described below.</div>
+        <div class="note"><div class="para">
+<div class="bold">Note</div>
+<div>Note: For this example to run correctly on your target, you must either add cache maintenance code into the <span class="arg">__ARM_overlay_api_loaded()</span> function as described below, or ensure that the cache is disabled.</div>
+</div></div>
+    </div>
+
+    <div class="indent">
+        <a name="Building_the_example"></a><h2>Building the example</h2>
+        <div class="para">This example can be built with Arm Compiler for Embedded 6 using the supplied Eclipse (makefile builder) project, or directly on the command-line with the supplied <span class="arg">Makefile</span>.</div>
+        
+        <div class="para">This example depends on semihosting support being provided by the debug system.  The Debugger enables semihosting automatically if either symbols <span class="arg">__auto_semihosting</span> or <span class="arg">__semihosting_library_function</span> are present in an image.  Arm Compiler for Embedded 6 and Arm Compiler 5 both add <span class="arg">__semihosting_library_function</span> automatically to an image at link time if that image uses any semihosting-using functions.  If compiling with GCC, use an alias symbol definition such as <span class="arg">void __auto_semihosting(void) __attribute__ ((alias("main")));</span> or turn on semihosting support in the Debugger explicitly with <span class="arg">set semihosting enabled on</span>.</div>
+
+    </div>
+
+    
+    <div class="indent">
+        <a name="Building_within_the_IDE"></a><h2>Building within the IDE</h2>
+        <div class="para">To build the supplied projects within the IDE:</div>
+        
+    <ol>
+        <li><div class="para">In the Project Explorer view, select the project you want to build.</div></li>
+        <li><div class="para">Select <span class="menu">Project<span class="para"> → </span>Build Project</span>.</div></li>
+    </ol>
+
+    </div>
+
+
+    <div class="indent">
+        <a name="Building_on_the_command-line"></a><h2>Building on the command-line</h2>
+        <div class="para">To build the example on the command-line with the supplied <span class="arg">make</span> utility:</div>
+        
+        <ul>
+           <li><div class="para">On Windows, open an <span class="interface">Arm DS Command Prompt</span> from the Start menu, run the <span class="arg">select_toolchain</span> utility, and select <span class="arg">Arm Compiler for Embedded 6</span> from the list</div></li>
+           <li><div class="para">On Linux, run the <span class="arg">suite_exec</span> utility with the <span class="arg">--toolchain</span> option to select the compiler and start a shell configured for the Development Studio environment, for example: <span class="arg">~/developmentstudio/bin/suite_exec --toolchain "Arm Compiler for Embedded 6" bash</span>
+</div></li>
+        </ul>
+
+        <div class="para">Then navigate to the <span class="arg">...\overlay_manager_manual</span> directory, and type:</div>
+        <div class="para"><span class="arg">make</span></div>
+        <div class="para">The usual <span class="arg">make</span> rules: <span class="arg">clean</span>, <span class="arg">all</span> and <span class="arg">rebuild</span> are provided in the <span class="arg">Makefile</span>.</div>
+        <div class="para">By default this will generate a library and demo program targeting Armv7-R.  To build it for a different architecture or a specific cpu, simply modify the makefile, e.g. replace:</div>
+        <div class="para"><span class="arg">-march=armv7-r</span></div>
+        <div class="para">with</div>
+        <div class="para"><span class="arg">-mcpu=cortex-a9</span></div>
+    </div>
+
+    <div class="indent">
+        <a name="Running_the_example"></a><a name="running"></a><h2>Running the example</h2>
+        <ol>
+            <li><div class="para">Select <span class="menu">Run<span class="para"> → </span>Debug Configurations...</span>.</div></li>
+            <li><div class="para">Select <span class="arg">overlay_manager_manual</span> from the list of <span class="interface">Generic Arm C/C++ Application</span> configurations.</div></li>
+            <li><div class="para">Click on <span class="interface">Debug</span> to start debugging.</div></li>
+            <li><div class="para">The example image will be downloaded to the target and will run to <span class="arg">main</span>.</div></li>
+            <li><div class="para">Run the executable (press F8). Text output appears in the <span class="interface">App Console</span> view (if the example is running on real hardware) or in the <span class="interface">Target Console</span> view (if the example is running on a model), similar to this:</div></li>
+        </ol>
+<pre class="code">
+Hello from main
+[loading overlay 0 -&gt; 20100000]
+Hello and goodbye from standalone 1
+[loading overlay 1 -&gt; 20100000]
+Hello and goodbye from standalone 2
+[loading overlay 2 -&gt; 20101000]
+Hello and goodbye from standalone 3
+[loading overlay 3 -&gt; 20101000]
+Hello and goodbye from direct chain 1
+[loading overlay 0 -&gt; 20100000]
+Hello and goodbye from direct chain 2
+[loading overlay 2 -&gt; 20101000]
+Hello and goodbye from direct chain 3
+[loading overlay 1 -&gt; 20100000]
+:
+Goodbye from main
+</pre>
+        <div class="para">
+<span class="interface">Disconnect</span> after the example has finished running.</div>
+        <div class="para">You can also run the example executable directly on the FVP model from within the <span class="interface">Arm DS Command Prompt</span> on Windows or the <span class="arg">suite_exec</span> shell on Linux with, for example:</div>
+<pre class="code">
+FVP_VE_Cortex-R4 -a overlay_manager_manual.axf
+</pre>
+    </div>
+
+    <div class="indent">
+        <a name="Basic_concepts"></a><h2>Basic concepts</h2>
+        <div class="para">An overlaid application consists of:</div>
+        <ul>
+          <li><div class="para">A number of <span class="italic">overlays</span>: pieces of code that are not resident in memory all the time.</div></li>
+          <li><div class="para">A number of <span class="italic">overlay regions</span>: pieces of memory that overlays are loaded into as needed. Each overlay region can contain different overlays at different times.</div></li>
+          <li><div class="para">Some <span class="italic">non-overlaid code</span>: code that is resident in memory permanently.</div></li>
+          <li><div class="para">The <span class="italic">overlay manager</span> (which must be part of the non-overlaid code). This takes care of loading and unloading different overlays as they are needed.</div></li>
+          <li><div class="para">Data (both RO and RW). This is never overlaid.</div></li>
+        </ul>
+        <div class="para">You decide which of your program's functions should be in overlays, and which ones should be in the same overlay. You specify this by annotating the function declarations in your source code to say which overlay each one should be in.</div>
+        <div class="para">You then decide which overlay each of your program's functions belong to. Placing them inside the overlay block in the scatter file.</div>
+        <div class="para">The linker also detects calls between two overlays, and between overlays and non-overlaid code, and redirects the calls through <span class="italic">veneers</span> which call the overlay manager to automatically load the target overlay.</div>
+        <div class="para">In the default configuration of this overlay manager, unloaded overlays are visible in the program's address space, and they are loaded into the overlay regions using the C <span class="arg">memcpy()</span> function. This is suitable for testing, and also suitable for use cases where memory is available to store overlays in but is not suitable for direct code execution (e.g. very slow ROM). Alternatively, it is possible to store overlays on a peripheral backing store, and provide your own function to load them into memory.</div>
+    </div>
+
+    <div class="indent">
+        <a name="Setting_up_an_application_to_run_with_overlays"></a><h2>Setting up an application to run with overlays</h2>
+        <div class="para">The following procedure is the simplest way to set up an overlaid application. Further refinements are discussed afterwards.</div>
+        <ol>
+            <li>
+<div class="para">In your application's source code, add</div>
+<pre class="code">
+#include "ovl_api.h"
+</pre>
+            <div class="para">and then annotate the declaration or definition of each function you want to be overlaid, by adding <span class="arg">__ARM_OVERLAY(</span><span class="repl">&lt;n&gt;</span><span class="arg">)</span>, where <span class="repl">&lt;n&gt;</span> is a number identifying a particular overlay. For example:</div>
+<pre class="code">
+__ARM_OVERLAY(0) void some_function(void);
+__ARM_OVERLAY(1) void some_other_function(void);
+</pre>
+            <div class="para">
+<span class="arg">__ARM_OVERLAY()</span> is a macro that inserts an ARM-specific section name attribute into the code.</div>
+            </li>
+            <li>
+<div class="para">In your application's scatter file, define overlay regions. This is done by providing a name for the region, the base address for that region, the keyword OVERLAY, the offset and the code to place inside the region. For example:</div>
+<pre class="code">
+LR_OVERLAYS 0xA0000000
+{
+    OVERLAY_REGION_0 0x80000000 OVERLAY 0x10000 { 
+    	module1.o(*)
+    }
+    OVERLAY_REGION_1 0x80010000 OVERLAY 0x10000 {
+    	module2.o(*)
+    }
+    OVERLAY_REGION_2 0x80020000 OVERLAY 0x10000 {
+    	module3.o(*)
+    }
+}
+</pre>
+            <div class="para">This example defines three overlay regions, each 0x10000 bytes long, starting at address 0x80000000. Overlays will be loaded into those regions as necessary, by copying them from their permanent locations starting at address 0xA0000000.</div>
+</li>
+            <li><div class="para">Write an appropriate implementation of the <span class="arg">__ARM_overlay_api_loaded()</span> function, defined in <span class="arg">ovl_api.h</span>, to perform cache maintenance between loading an overlay and branching to it. This function will vary depending on the target CPU and whether an operating system is involved.</div></li>
+            <li><div class="para">In your application's makefile or project file, add the option <span class="arg">--overlay_veneers</span> to the <span class="arg">armlink</span> command-line. Also, add the library file <span class="arg">overlay.a</span> built from the sources in this directory.</div></li>
+            <li><div class="para">To enable overlay-aware debugging, add the option <span class="arg">--emit_debug_overlay_section</span> to the <span class="arg">armlink</span> command-line. This generates <span class="arg">.ARM.debug_overlay</span> sections that the debugger uses to keep track of the overlays. This is only needed for debugging and does not affect program execution if omitted.</div></li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Exploring_the_example"></a><a name="running"></a><h2>Exploring the example</h2>
+        <ol>
+            <li><div class="para">Launch the example for debug and run the code to <span class="arg">main</span> in the same way as before.</div></li>
+            <li><div class="para">The Debugger provides additional features to support overlays.  Overlay support is enabled automatically in the debugger when an overlay image is loaded that contains certain symbols such as <span class="arg">__ARM_notify_overlay_loaded</span> and the linker-generated <span class="arg">xxxx$$Table$$AutoOverlay</span> symbols.</div></li>
+            <li>
+<div class="para">In the <span class="interface">Command</span> field, enter <span class="arg">info overlays</span> then press <span class="interface">Submit</span>.</div>
+<pre class="code">
+info overlays
+Id | Load Address | Exec Address | Size (bytes) | Loaded
+--------------------------------------------------------
+0  | 0x10000000   | 0x20100000   | 0x7C         | false
+1  | 0x1000007C   | 0x20100000   | 0x54         | false
+2  | 0x100000D0   | 0x20101000   | 0x7C         | false
+3  | 0x1000014C   | 0x20101000   | 0x4C         | false
+</pre>
+            <div class="para">This output shows the Load Address, Exec Address and Size for each overlay, and whether it is loaded or not.  Currently no overlay is loaded.</div>
+</li>
+            <li><div class="para">In the <span class="interface">Command</span> field, enter <span class="arg">break standalone_0</span> to set a breakpoint on the first overlaid function (located in Overlay 0), then click on <span class="interface">Continue</span> or press F8.</div></li>
+            <li>
+<div class="para">Enter <span class="arg">info overlays</span> again, to see Overlay 0 has been loaded:</div>
+<pre class="code">
+info overlays
+Id | Load Address | Exec Address | Size (bytes) | Loaded
+--------------------------------------------------------
+0  | 0x10000000   | 0x20100000   | 0x7C         | true
+1  | 0x1000007C   | 0x20100000   | 0x54         | false
+2  | 0x100000D0   | 0x20101000   | 0x7C         | false
+3  | 0x1000014C   | 0x20101000   | 0x4C         | false
+</pre>
+            </li>
+            <li><div class="para">Similar information can be shown in the <span class="interface">Overlays</span> view.  To open this view, select <span class="menu">Window<span class="para"> → </span>Show View<span class="para"> → </span>Overlays</span>.</div></li>
+            <li><div class="para">Set breakpoints on <span class="arg">standalone_2</span> and <span class="arg">standalone_3</span> in <span class="arg">main.c</span>, then click on <span class="interface">Continue</span> or press F8 to reach <span class="arg">standalone_1</span>.</div></li>
+            <li><div class="para">At <span class="arg">standalone_2</span>, observe that both Overlay 1 is now loaded. And Overlay 0 has been evicted.</div></li>
+            <li><div class="para">In the <span class="interface">Overlays</span> view, expand Overlay 0 and Overlay 1 to reveal the functions they contain.  Observe that <span class="arg">standalone_1</span> is in Overlay 0 and <span class="arg">standalone_2</span> is in Overlay 1, and that other functions also reside in those overlays.</div></li>
+            <li><div class="para">Between loading an overlay and branching to it, <span class="arg">__ARM_overlay_api_loaded()</span> is called to perform cache maintenance.  To see this, enter <span class="arg">break __ARM_overlay_api_loaded</span> in the <span class="interface">Command</span> field, then click on <span class="interface">Continue</span> or press F8.</div></li>
+            <li><div class="para">At <span class="arg">__ARM_overlay_api_loaded()</span>, click on <span class="interface">Continue</span> or press F8 again to reach <span class="arg">standalone_2</span>.</div></li>
+            <li><div class="para">The Debugger itself needs to be notified when overlays are loaded/unloaded.  To achieve this, it sets a special "debugger internal" breakpoint hook on <span class="arg">__ARM_notify_overlay_loaded</span>.  Select the <span class="interface">Breakpoints</span> view to see this and the other breakpoints set.</div></li>
+            <li><div class="para">At <span class="arg">standalone_3</span>, observe that Overlays 1 and 2 are now loaded.</div></li>
+            <li><div class="para">Delete all breakpoints and disconnect.</div></li>
+        </ol>
+    </div>
+
+    <div class="indent">
+        <a name="Known_issues_and_troubleshooting"></a><h2>Known issues and troubleshooting</h2>
+        <ul>
+          <li><div class="para">The overlay system will not correctly handle taking the address of a non-overlaid function and passing it into an overlay.</div></li>
+          <li><div class="para">The overlay system does not support C++.</div></li>
+          <li><div class="para">This overlay manager does not support systems with hardware floating-point registers.</div></li>
+          <li><div class="para">If multiple translation units use the same number as an argument to the <span class="arg">__ARM_OVERLAY()</span> macro, the functions tagged with that number will not all be placed in the same overlay. Instead, a separate overlay will be created for each translation unit's use of the same number.</div></li>
+        </ul>
+    </div>
+
+    <h2>See also:</h2>
+<div class="indent"><ul>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101469/latest/Debugging-code/Overview--Debug-connections-in-Arm-Debugger"><i>Debug connections in Arm Debugger</i> in <i>Arm Development Studio Getting Started Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101470/latest/"><i>Arm Development Studio User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101471/latest/"><i>Arm Debugger Command Reference</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100748/latest/"><i>Arm Compiler for Embedded 6 User Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/101754/latest"><i>Arm Compiler for Embedded 6 Reference Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100066/latest/"><i>Arm Compiler for Embedded 6 Software Development Guide</i></a></div></li>
+        <li><div class="para"><a href="https://developer.arm.com/documentation/100966/latest/"><i>Fixed Virtual Platforms FVP Reference Guide</i></a></div></li>
+    </ul></div>
+<br><br><div align="left" class="legal">
+<hr>Copyright© 2010-2022 Arm Limited (or its affiliates). All rights reserved.</div>
+</body>
+</html>

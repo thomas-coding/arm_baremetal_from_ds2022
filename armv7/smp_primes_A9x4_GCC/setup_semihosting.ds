@@ -1,0 +1,6 @@
+# _mainCRTStartup uses __stack symbol if it gets 0 from semihosting
+set semihosting stack-base 0
+set semihosting stack-limit 0
+set semihosting heap-base 0
+set semihosting heap-limit 0
+set semihosting enabled on
